@@ -1,22 +1,22 @@
-import { QueryProvider } from "@/provider"
-import type { Metadata } from "next"
-import "./globals.css"
+import { QueryProvider } from '@/provider'
+import type { Metadata } from 'next'
+import './globals.css'
 
 export const metadata: Metadata = {
-  title: "Clikcway",
-  description: "Elaborado por: Ramon Perez",
+	title: 'Clikcway',
+	description: 'Elaborado por: Ramon Perez'
 }
 
 export default function RootLayout({
-  children,
+	children
 }: Readonly<{
-  children: React.ReactNode
+	children: React.ReactNode
 }>) {
-  return (
-    <html lang="en">
-      <body>
-        <QueryProvider>{children}</QueryProvider>
-      </body>
-    </html>
-  )
+	return (
+		<html lang="en">
+			<body>
+				<QueryProvider>{children}</QueryProvider>
+			</body>
+		</html>
+	)
 }

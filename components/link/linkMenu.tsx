@@ -6,7 +6,7 @@ interface LinkMenuProps {
 	name: string
 	href: string
 	icon?: boolean
-	class2?: string
+	class2?: boolean
 	mobile?: boolean
 	children?: React.ReactNode
 }

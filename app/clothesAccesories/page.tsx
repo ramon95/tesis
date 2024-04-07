@@ -1,6 +1,8 @@
-import { Layout } from '@/components'
+'use client'
 
-export default function ClothesAccesories() {
+import { ClothesAccesories, Layout } from '@/components'
+
+export default function ClothesAccesoriesPage() {
 	return (
 		<Layout>
 			<ClothesAccesories />

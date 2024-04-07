@@ -1,3 +1,4 @@
+export * from './clothesAccesories'
 export * from './layout'
-export * from './navbar'
 export * from './link'
+export * from './navbar'

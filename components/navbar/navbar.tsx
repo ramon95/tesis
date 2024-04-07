@@ -1,6 +1,5 @@
 'use client'
 
-import React, { Fragment, useState } from 'react'
 import { Dialog, Popover, Transition } from '@headlessui/react'
 import {
 	Bars3Icon,
@@ -8,6 +7,8 @@ import {
 	ShoppingBagIcon,
 	XMarkIcon
 } from '@heroicons/react/24/outline'
+import Link from 'next/link'
+import { Fragment, useState } from 'react'
 import { LinkMenu } from '..'
 
 export const Navbar = () => {
@@ -107,14 +108,14 @@ export const Navbar = () => {
 								<div className="flex h-16 items-center justify-between">
 									{/* Logo (lg+) */}
 									<div className="hidden lg:flex lg:flex-1 lg:items-center">
-										<a href="#">
+										<Link href="/">
 											<span className="sr-only">Clikway</span>
 											<img
 												className="h-8 w-auto"
 												src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
 												alt=""
 											/>
-										</a>
+										</Link>
 									</div>
 
 									<div className="hidden h-full lg:flex">
@@ -156,24 +157,21 @@ export const Navbar = () => {
 									</div>
 
 									{/* Logo (lg-) */}
-									<a href="#" className="lg:hidden">
+									<Link href="/" className="lg:hidden">
 										<span className="sr-only">Your Company</span>
 										<img
 											src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
 											alt=""
 											className="h-8 w-auto"
 										/>
-									</a>
+									</Link>
 
 									<div className="flex flex-1 items-center justify-end">
 										<LinkMenu name="Buscar" href="#" class2 />
 										<div className="flex items-center lg:ml-8">
 											{/* Cart */}
 											<div className="ml-4 flow-root lg:ml-8">
-												<a
-													href="#"
-													className="group -m-2 flex items-center p-2"
-												>
+												<div className="group -m-2 flex items-center p-2">
 													<ShoppingBagIcon
 														className="h-6 w-6 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
 														aria-hidden="true"
@@ -184,7 +182,7 @@ export const Navbar = () => {
 													<span className="sr-only">
 														items in cart, view bag
 													</span>
-												</a>
+												</div>
 											</div>
 										</div>
 									</div>

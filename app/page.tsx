@@ -1,7 +1,7 @@
-"use client"
+'use client'
 
-import { Layout } from "@/components"
+import { Layout } from '@/components'
 
 export default function Home() {
-  return <Layout>Home</Layout>
+	return <Layout>Home</Layout>
 }
