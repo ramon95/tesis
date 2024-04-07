@@ -1,12 +1,8 @@
 'use client'
 
-import { Layout } from '@/components'
+import { Layout, StartrReview } from '@/components'
 import { RadioGroup } from '@headlessui/react'
-import {
-	CheckIcon,
-	QuestionMarkCircleIcon,
-	StarIcon
-} from '@heroicons/react/20/solid'
+import { CheckIcon, QuestionMarkCircleIcon } from '@heroicons/react/20/solid'
 import { ShieldCheckIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import Link from 'next/link'
@@ -47,35 +43,7 @@ export default function ClothesAccesoriesDetailPage({
 	return (
 		<Layout>
 			<div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:grid lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8 lg:px-8">
-				{/* Product details */}
 				<div className="lg:max-w-lg lg:self-end">
-					<nav aria-label="Breadcrumb">
-						<ol role="list" className="flex items-center space-x-2">
-							{product.breadcrumbs.map((breadcrumb, breadcrumbIdx) => (
-								<li key={breadcrumb.id}>
-									<div className="flex items-center text-sm">
-										<a
-											href={breadcrumb.href}
-											className="font-medium text-gray-500 hover:text-gray-900"
-										>
-											{breadcrumb.name}
-										</a>
-										{breadcrumbIdx !== product.breadcrumbs.length - 1 ? (
-											<svg
-												viewBox="0 0 20 20"
-												fill="currentColor"
-												aria-hidden="true"
-												className="ml-2 h-5 w-5 flex-shrink-0 text-gray-300"
-											>
-												<path d="M5.555 17.776l8-16 .894.448-8 16-.894-.448z" />
-											</svg>
-										) : null}
-									</div>
-								</li>
-							))}
-						</ol>
-					</nav>
-
 					<div className="mt-4">
 						<h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
 							{product.name}
@@ -96,20 +64,7 @@ export default function ClothesAccesoriesDetailPage({
 								<h2 className="sr-only">Reviews</h2>
 								<div className="flex items-center">
 									<div>
-										<div className="flex items-center">
-											{[0, 1, 2, 3, 4].map(rating => (
-												<StarIcon
-													key={rating}
-													className={clsx(
-														reviews.average > rating
-															? 'text-yellow-400'
-															: 'text-gray-300',
-														'h-5 w-5 flex-shrink-0'
-													)}
-													aria-hidden="true"
-												/>
-											))}
-										</div>
+										<StartrReview average={reviews.average} />
 										<p className="sr-only">{reviews.average} out of 5 stars</p>
 									</div>
 									<p className="ml-2 text-sm text-gray-500">
