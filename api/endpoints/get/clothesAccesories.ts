@@ -3,7 +3,7 @@ import { API } from '@/api'
 interface ClothesAccessoriesResponse {
 	createdAt: string
 	name: string
-	avatar: string
+	image: string
 	price: string
 	description: string
 	id: string
