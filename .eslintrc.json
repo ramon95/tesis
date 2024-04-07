@@ -4,6 +4,7 @@
 		"es2021": true
 	},
 	"extends": [
+		"plugin:@next/next/recommended",
 		"airbnb",
 		"plugin:@typescript-eslint/recommended",
 		"prettier/prettier",
