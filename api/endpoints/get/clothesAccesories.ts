@@ -15,11 +15,34 @@ export const getClothesAccesories = async (): Promise<
 	let response: ClothesAccessoriesResponse[] | undefined
 	await API()
 		.get(`/clothesAccesories`)
-		.then(res => {
+		.then((res: { data: ClothesAccessoriesResponse[] }) => {
 			response = res.data as ClothesAccessoriesResponse[]
 		})
-		.catch(error => {
-			response = error.response.data
+		.catch(
+			(error: {
+				response: { data: ClothesAccessoriesResponse[] | undefined }
+			}) => {
+				response = error.response.data
+			}
+		)
+	return response as ClothesAccessoriesResponse[]
+}
+
+export const getClothesAccesoriesById = async (
+	id: string
+): Promise<ClothesAccessoriesResponse[]> => {
+	let response: ClothesAccessoriesResponse[] | undefined
+	await API()
+		.get(`/clothesAccesories/${id}`)
+		.then((res: { data: ClothesAccessoriesResponse[] }) => {
+			response = res.data as ClothesAccessoriesResponse[]
 		})
+		.catch(
+			(error: {
+				response: { data: ClothesAccessoriesResponse[] | undefined }
+			}) => {
+				response = error.response.data
+			}
+		)
 	return response as ClothesAccessoriesResponse[]
 }
