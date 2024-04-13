@@ -1,5 +1,6 @@
 import { QueryProvider } from '@/provider'
 import type { Metadata } from 'next'
+import 'react-loading-skeleton/dist/skeleton.css'
 import './globals.css'
 
 export const metadata: Metadata = {

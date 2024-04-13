@@ -1,6 +1,6 @@
 import { API } from '@/api'
 
-interface ClothesAccessoriesResponse {
+export interface ClothesAccessoriesResponse {
 	createdAt: string
 	name: string
 	image: string
@@ -30,19 +30,19 @@ export const getClothesAccesories = async (): Promise<
 
 export const getClothesAccesoriesById = async (
 	id: string
-): Promise<ClothesAccessoriesResponse[]> => {
-	let response: ClothesAccessoriesResponse[] | undefined
+): Promise<ClothesAccessoriesResponse> => {
+	let response: ClothesAccessoriesResponse | undefined
 	await API()
 		.get(`/clothesAccesories/${id}`)
-		.then((res: { data: ClothesAccessoriesResponse[] }) => {
-			response = res.data as ClothesAccessoriesResponse[]
+		.then((res: { data: ClothesAccessoriesResponse }) => {
+			response = res.data as ClothesAccessoriesResponse
 		})
 		.catch(
 			(error: {
-				response: { data: ClothesAccessoriesResponse[] | undefined }
+				response: { data: ClothesAccessoriesResponse | undefined }
 			}) => {
 				response = error.response.data
 			}
 		)
-	return response as ClothesAccessoriesResponse[]
+	return response as ClothesAccessoriesResponse
 }

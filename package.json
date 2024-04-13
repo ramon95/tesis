@@ -41,8 +41,9 @@
 		"prettier": "^2.8.7",
 		"react": "^18",
 		"react-dom": "^18",
-		"react-toastify": "^10.0.4",
 		"react-inlinesvg": "^3.0.2",
+		"react-loading-skeleton": "^3.4.0",
+		"react-toastify": "^10.0.4",
 		"tsconfig-paths-webpack-plugin": "^4.0.1",
 		"universal-cookie": "^4.0.4"
 	},
@@ -52,8 +53,8 @@
 		"@types/react-dom": "^18",
 		"autoprefixer": "^10.0.1",
 		"eslint": "^8",
-		"husky": "^8.0.3",
 		"eslint-config-next": "14.1.4",
+		"husky": "^8.0.3",
 		"postcss": "^8",
 		"tailwindcss": "^3.3.0",
 		"typescript": "^5"

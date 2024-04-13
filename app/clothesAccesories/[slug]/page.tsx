@@ -1,32 +1,15 @@
 'use client'
 
+import { GET_CLOTHES_ACCESORIES_BY_ID, getClothesAccesoriesById } from '@/api'
 import { Layout, StartrReview } from '@/components'
 import { RadioGroup } from '@headlessui/react'
 import { CheckIcon, QuestionMarkCircleIcon } from '@heroicons/react/20/solid'
-import { ShieldCheckIcon } from '@heroicons/react/24/outline'
+import { useQuery } from '@tanstack/react-query'
 import clsx from 'clsx'
+import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
-const product = {
-	name: 'Everyday Ruck Snack',
-	href: '#',
-	price: '$220',
-	description:
-		"Don't compromise on snack-carrying capacity with this lightweight and spacious bag. The drawstring top keeps all your favorite chips, crisps, fries, biscuits, crackers, and cookies secure.",
-	imageSrc:
-		'https://tailwindui.com/img/ecommerce-images/product-page-04-featured-product-shot.jpg',
-	imageAlt:
-		'Model wearing light green backpack with black canvas straps and front zipper pouch.',
-	breadcrumbs: [
-		{ id: 1, name: 'Travel', href: '#' },
-		{ id: 2, name: 'Bags', href: '#' }
-	],
-	sizes: [
-		{ name: '18L', description: 'Perfect for a reasonable amount of snacks.' },
-		{ name: '20L', description: 'Enough room for a serious amount of snacks.' }
-	]
-}
 const reviews = { average: 4, totalCount: 1624 }
 
 export default function ClothesAccesoriesDetailPage({
@@ -34,11 +17,21 @@ export default function ClothesAccesoriesDetailPage({
 }: {
 	params: { slug: string }
 }) {
-	const [selectedSize, setSelectedSize] = useState(product.sizes[0])
 	const { slug } = params
+	const [selectedSize, setSelectedSize] = useState('L')
+	const [sizes, setSizes] = useState([
+		{ name: '18L', description: 'Perfect for a reasonable amount of snacks.' },
+		{ name: '20L', description: 'Enough room for a serious amount of snacks.' }
+	])
+
+	const { data, isLoading } = useQuery({
+		queryKey: [GET_CLOTHES_ACCESORIES_BY_ID, slug],
+		queryFn: () => getClothesAccesoriesById(slug),
+		retry: false
+	})
 	useEffect(() => {
-		console.warn('🚀 ~ slug:', slug)
-	}, [slug])
+		console.warn('🚀 ~ data:', data)
+	}, [data])
 
 	return (
 		<Layout>
@@ -46,7 +39,7 @@ export default function ClothesAccesoriesDetailPage({
 				<div className="lg:max-w-lg lg:self-end">
 					<div className="mt-4">
 						<h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-							{product.name}
+							{data?.name}
 						</h1>
 					</div>
 
@@ -56,9 +49,7 @@ export default function ClothesAccesoriesDetailPage({
 						</h2>
 
 						<div className="flex items-center">
-							<p className="text-lg text-gray-900 sm:text-xl">
-								{product.price}
-							</p>
+							<p className="text-lg text-gray-900 sm:text-xl">{data?.price}</p>
 
 							<div className="ml-4 border-l border-gray-300 pl-4">
 								<h2 className="sr-only">Reviews</h2>
@@ -75,7 +66,7 @@ export default function ClothesAccesoriesDetailPage({
 						</div>
 
 						<div className="mt-4 space-y-6">
-							<p className="text-base text-gray-500">{product.description}</p>
+							<p className="text-base text-gray-500">{data?.description}</p>
 						</div>
 
 						<div className="mt-6 flex items-center">
@@ -93,9 +84,11 @@ export default function ClothesAccesoriesDetailPage({
 				{/* Product image */}
 				<div className="mt-10 lg:col-start-2 lg:row-span-2 lg:mt-0 lg:self-center">
 					<div className="aspect-h-1 aspect-w-1 overflow-hidden rounded-lg">
-						<img
-							src={product.imageSrc}
-							alt={product.imageAlt}
+						<Image
+							alt="prodcut"
+							src={data?.image || ''}
+							width={500}
+							height={500}
 							className="h-full w-full object-cover object-center"
 						/>
 					</div>
@@ -116,10 +109,10 @@ export default function ClothesAccesoriesDetailPage({
 										Size
 									</RadioGroup.Label>
 									<div className="mt-1 grid grid-cols-1 gap-4 sm:grid-cols-2">
-										{product.sizes.map(size => (
+										{sizes.map((size, key) => (
 											<RadioGroup.Option
 												as="div"
-												key={size.name}
+												key={key}
 												value={size}
 												className={({ active }) =>
 													clsx(
@@ -128,7 +121,7 @@ export default function ClothesAccesoriesDetailPage({
 													)
 												}
 											>
-												{({ active, checked }) => (
+												{/* {({ active, checked }) => (
 													<>
 														<RadioGroup.Label
 															as="p"
@@ -153,7 +146,7 @@ export default function ClothesAccesoriesDetailPage({
 															aria-hidden="true"
 														/>
 													</>
-												)}
+												)} */}
 											</RadioGroup.Option>
 										))}
 									</div>
@@ -178,20 +171,6 @@ export default function ClothesAccesoriesDetailPage({
 								>
 									Add to bag
 								</button>
-							</div>
-							<div className="mt-6 text-center">
-								<Link
-									href="/"
-									className="group inline-flex text-base font-medium"
-								>
-									<ShieldCheckIcon
-										className="mr-2 h-6 w-6 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
-										aria-hidden="true"
-									/>
-									<span className="text-gray-500 hover:text-gray-700">
-										Lifetime Guarantee
-									</span>
-								</Link>
 							</div>
 						</form>
 					</section>
