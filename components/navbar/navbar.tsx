@@ -3,7 +3,6 @@
 import { Dialog, Popover, Transition } from '@headlessui/react'
 import {
 	Bars3Icon,
-	MagnifyingGlassIcon,
 	ShoppingBagIcon,
 	XMarkIcon
 } from '@heroicons/react/24/outline'
@@ -19,7 +18,6 @@ export const Navbar = () => {
 		{ name: 'Perfumeria', href: '#' },
 		{ name: 'Alimentos no perecederos', href: '#' }
 	]
-
 	return (
 		<div>
 			{/* Mobile menu */}
@@ -134,9 +132,7 @@ export const Navbar = () => {
 											</div>
 										</Popover.Group>
 									</div>
-
-									{/* Mobile menu and search (lg-) */}
-									<div className="flex flex-1 items-center lg:hidden">
+									<div className="lg:hidden">
 										<button
 											type="button"
 											className="-ml-2 rounded-md bg-white p-2 text-gray-400"
@@ -145,15 +141,6 @@ export const Navbar = () => {
 											<span className="sr-only">Open menu</span>
 											<Bars3Icon className="h-6 w-6" aria-hidden="true" />
 										</button>
-
-										{/* Search */}
-										<LinkMenu name="Buscar" href="#" icon>
-											<span className="sr-only">Buscar</span>
-											<MagnifyingGlassIcon
-												className="h-6 w-6"
-												aria-hidden="true"
-											/>
-										</LinkMenu>
 									</div>
 
 									{/* Logo (lg-) */}
