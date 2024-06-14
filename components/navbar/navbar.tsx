@@ -6,7 +6,6 @@ import {
 	ShoppingBagIcon,
 	XMarkIcon
 } from '@heroicons/react/24/outline'
-import Link from 'next/link'
 import { Fragment, useState } from 'react'
 import { LinkMenu } from '..'
 
@@ -14,9 +13,9 @@ export const Navbar = () => {
 	const [open, setOpen] = useState(false)
 	const navigation = [
 		{ name: 'Ropa y accesorios', href: '/clothesAccesories' },
-		{ name: 'Elctrodomesticos y repuestos', href: '#' },
-		{ name: 'Perfumeria', href: '#' },
-		{ name: 'Alimentos no perecederos', href: '#' }
+		{ name: 'Elctrodomesticos y repuestos', href: '/appliancesSpareParts' },
+		{ name: 'Perfumeria', href: '/perfumery' },
+		{ name: 'Alimentos no perecederos', href: '/nonperishableFood' }
 	]
 	return (
 		<div>
@@ -104,18 +103,6 @@ export const Navbar = () => {
 						<div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 							<div className="border-b border-gray-200">
 								<div className="flex h-16 items-center justify-between">
-									{/* Logo (lg+) */}
-									<div className="hidden lg:flex lg:flex-1 lg:items-center">
-										<Link href="/">
-											<span className="sr-only">Clikway</span>
-											<img
-												className="h-8 w-auto"
-												src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-												alt=""
-											/>
-										</Link>
-									</div>
-
 									<div className="hidden h-full lg:flex">
 										{/* Flyout menus */}
 										<Popover.Group className="inset-x-0 bottom-0 px-4">
@@ -142,16 +129,6 @@ export const Navbar = () => {
 											<Bars3Icon className="h-6 w-6" aria-hidden="true" />
 										</button>
 									</div>
-
-									{/* Logo (lg-) */}
-									<Link href="/" className="lg:hidden">
-										<span className="sr-only">Your Company</span>
-										<img
-											src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-											alt=""
-											className="h-8 w-auto"
-										/>
-									</Link>
 
 									<div className="flex flex-1 items-center justify-end">
 										<LinkMenu name="Buscar" href="#" class2 />
