@@ -6,6 +6,7 @@ import {
 	ShoppingBagIcon,
 	XMarkIcon
 } from '@heroicons/react/24/outline'
+import Link from 'next/link'
 import { Fragment, useState } from 'react'
 import { LinkMenu } from '..'
 
@@ -89,7 +90,7 @@ export const Navbar = () => {
 			<header className="relative">
 				<nav aria-label="Top">
 					{/* Top navigation */}
-					<div className="bg-gray-900">
+					<div className="bg-gray-900 hidden lg:block">
 						<div className="mx-auto flex h-10 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
 							<div className="flex justify-end w-full space-x-6">
 								<LinkMenu name="Entrar" href="/auth/singin" />
@@ -108,13 +109,13 @@ export const Navbar = () => {
 										<Popover.Group className="inset-x-0 bottom-0 px-4">
 											<div className="flex h-full justify-center space-x-8">
 												{navigation.map(page => (
-													<a
+													<Link
 														key={page.name}
 														href={page.href}
 														className="flex items-center text-sm font-medium text-gray-700 hover:text-gray-800"
 													>
 														{page.name}
-													</a>
+													</Link>
 												))}
 											</div>
 										</Popover.Group>
