@@ -5,7 +5,6 @@
 	"engines": {
 		"node": ">=20"
 	},
-	"type": "module",
 	"scripts": {
 		"dev": "next dev",
 		"build": "next build",
@@ -49,6 +48,7 @@
 		"react-inlinesvg": "^3.0.2",
 		"react-loading-skeleton": "^3.4.0",
 		"react-toastify": "^10.0.4",
+		"sass": "^1.77.5",
 		"tsconfig-paths-webpack-plugin": "^4.0.1",
 		"universal-cookie": "^4.0.4"
 	},

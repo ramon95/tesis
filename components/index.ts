@@ -1,6 +1,7 @@
 export * from './appliancesSpareParts'
 export * from './clothesAccesories'
 export * from './detailItem'
+export * from './icon'
 export * from './inputs'
 export * from './itemCard'
 export * from './layout'
