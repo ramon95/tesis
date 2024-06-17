@@ -2,7 +2,6 @@
 import { Icon, MessageErrorInputs } from '@/components'
 import { Icons } from '@/media'
 import clsx from 'clsx'
-import Image from 'next/image'
 import React, { ChangeEventHandler, useState } from 'react'
 import { FieldError, UseFormRegister } from 'react-hook-form'
 
@@ -35,10 +34,10 @@ export const InputPassword: React.FC<InputPasswordProps> = ({
 	const registerInput = register && register(name, rules)
 	return (
 		<div className="relative">
-			{label && <h4 className="font-semibold text-grey-600 mb-1">{label}</h4>}
+			{label && <h4 className="font-semibold text-black mb-1">{label}</h4>}
 			<input
 				className={clsx(
-					'w-full p-3 bg-white rounded border border-grey-10 placeholder:text-placeholder text-grey-800 outline-none',
+					'w-full p-3 bg-white rounded border border-grey-10 placeholder:text-placeholder text-black outline-none',
 					className
 				)}
 				placeholder={placeholder}
@@ -54,11 +53,9 @@ export const InputPassword: React.FC<InputPasswordProps> = ({
 				onClick={() => setPassword(!password)}
 			>
 				<Icon
-					className="text-gray-11 w-6 h-6"
-					src={Icons.visibilityOff}
-					// src="/assets/icons/visibilityOn.svg"
+					src={password ? Icons.visibilityOff : Icons.visibilityOn}
+					className={clsx('absolute w-6 h-6 top-10 right-2 text-grey-800')}
 				/>
-				<Image src="/next.svg" alt="visibilityOff" width={24} height={24} />
 				{error && error.message && <MessageErrorInputs text={error.message} />}
 			</button>
 		</div>

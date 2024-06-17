@@ -98,7 +98,9 @@ export const Input: React.FC<InputProps> = ({
 				onChange={e => handleInputChange(e)}
 				{...props}
 			/>
-			<Icon src={rightIcon as string} className="text-gray-11 w-6 h-6" />
+			{rightIcon && (
+				<Icon src={rightIcon as string} className="text-gray-11 w-6 h-6" />
+			)}
 			{error && error.message && <MessageErrorInputs text={error.message} />}
 		</div>
 	)

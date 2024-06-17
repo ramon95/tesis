@@ -1,4 +1,5 @@
 import { QueryProvider } from '@/provider'
+import ToastProvider from '@/provider/providerToast'
 import type { Metadata } from 'next'
 import 'react-loading-skeleton/dist/skeleton.css'
 import './globals.css'
@@ -16,7 +17,9 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<body>
-				<QueryProvider>{children}</QueryProvider>
+				<QueryProvider>
+					<ToastProvider>{children}</ToastProvider>
+				</QueryProvider>
 			</body>
 		</html>
 	)

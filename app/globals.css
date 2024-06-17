@@ -31,3 +31,7 @@ body {
 		text-wrap: balance;
 	}
 }
+
+.Toastify__close-button {
+	padding-top: 9px !important;
+}

@@ -1,8 +1,11 @@
 'use client'
 
-import { Input } from '@/components'
+import { registerUser } from '@/api'
+import { Input, InputPassword } from '@/components'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
 
 interface FormViewUser {
 	name: string
@@ -13,11 +16,12 @@ interface FormViewUser {
 }
 
 export default function Registration() {
+	const router = useRouter()
 	const {
 		register,
 		handleSubmit,
 		formState: { errors }
-	} = useForm<FormViewUser>()
+	} = useForm<FormViewUser>({ mode: 'onChange' })
 
 	const rules = {
 		name: {
@@ -47,8 +51,18 @@ export default function Registration() {
 		}
 	}
 
-	const handleSubmitForm = (data: FormViewUser) => {
-		console.warn('🚀 ~ handleSubmitForm ~ data:', data)
+	const handleSubmitForm = async (data: FormViewUser) => {
+		const res = await registerUser(data)
+		if (res.errors) {
+			toast.error(res.errors[0].message, {
+				position: 'top-center'
+			})
+		} else {
+			toast.success(res.message, {
+				position: 'top-center'
+			})
+			router.push('/auth/singin')
+		}
 	}
 
 	return (
@@ -82,70 +96,20 @@ export default function Registration() {
 					<Input
 						type="email"
 						name="email"
-						label="Apellido"
+						label="Correo"
 						register={register}
-						placeholder="Perez"
-						error={errors.email}
 						rules={rules.email}
+						error={errors.email}
+						placeholder="correo@mail.com"
 					/>
 
-					<div>
-						<label
-							htmlFor="email"
-							className="block text-sm font-medium leading-6 text-gray-900"
-						>
-							Nombre
-						</label>
-						<div className="mt-2">
-							<input
-								id="email"
-								name="email"
-								type="email"
-								autoComplete="email"
-								required
-								className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-							/>
-						</div>
-					</div>
-					<div>
-						<label
-							htmlFor="email"
-							className="block text-sm font-medium leading-6 text-gray-900"
-						>
-							Correo Electronico
-						</label>
-						<div className="mt-2">
-							<input
-								id="email"
-								name="email"
-								type="email"
-								autoComplete="email"
-								required
-								className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-							/>
-						</div>
-					</div>
-
-					<div>
-						<div className="flex items-center justify-between">
-							<label
-								htmlFor="password"
-								className="block text-sm font-medium leading-6 text-gray-900"
-							>
-								Contraseña
-							</label>
-						</div>
-						<div className="mt-2">
-							<input
-								id="password"
-								name="password"
-								type="password"
-								autoComplete="current-password"
-								required
-								className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-							/>
-						</div>
-					</div>
+					<InputPassword
+						name="password"
+						label="Contraseña"
+						register={register}
+						rules={rules.password}
+						error={errors.password}
+					/>
 
 					<div>
 						<button
