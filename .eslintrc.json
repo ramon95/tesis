@@ -26,6 +26,7 @@
 	],
 
 	"rules": {
+		"no-underscore-dangle": "off",
 		"import/no-unresolved": "error",
 		"jsx-a11y/media-has-caption": "off",
 		"no-console": ["error", { "allow": ["warn", "error"] }],
