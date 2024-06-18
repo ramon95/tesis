@@ -1,3 +1,4 @@
+export * from './loading'
 export * from './appliancesSpareParts'
 export * from './clothesAccesories'
 export * from './detailItem'

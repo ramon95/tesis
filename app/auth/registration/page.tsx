@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 
-interface FormViewUser {
+interface FormRegisterUser {
 	name: string
 	lastname: string
 	email: string
@@ -21,7 +21,7 @@ export default function Registration() {
 		register,
 		handleSubmit,
 		formState: { errors }
-	} = useForm<FormViewUser>({ mode: 'onChange' })
+	} = useForm<FormRegisterUser>({ mode: 'onChange' })
 
 	const rules = {
 		name: {
@@ -51,7 +51,7 @@ export default function Registration() {
 		}
 	}
 
-	const handleSubmitForm = async (data: FormViewUser) => {
+	const handleSubmitForm = async (data: FormRegisterUser) => {
 		const res = await registerUser(data)
 		if (res.errors) {
 			toast.error(res.errors[0].message, {

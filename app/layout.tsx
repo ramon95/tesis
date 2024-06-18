@@ -1,4 +1,4 @@
-import { QueryProvider } from '@/provider'
+import { QueryProvider, SessionAuthProvider } from '@/provider'
 import ToastProvider from '@/provider/providerToast'
 import type { Metadata } from 'next'
 import 'react-loading-skeleton/dist/skeleton.css'
@@ -18,7 +18,9 @@ export default function RootLayout({
 		<html lang="en">
 			<body>
 				<QueryProvider>
-					<ToastProvider>{children}</ToastProvider>
+					<SessionAuthProvider>
+						<ToastProvider>{children}</ToastProvider>
+					</SessionAuthProvider>
 				</QueryProvider>
 			</body>
 		</html>

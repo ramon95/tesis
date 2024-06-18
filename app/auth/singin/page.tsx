@@ -1,9 +1,61 @@
+'use client'
+
+import { Input, InputPassword, Loading } from '@/components'
 import clsx from 'clsx'
+import { signIn } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+
+interface FormSingInUser {
+	email: string
+	password: string
+}
 
 export default function Singin() {
-	return (
+	const router = useRouter()
+	const [loading, setLoading] = useState(false)
+	const {
+		register,
+		handleSubmit,
+		setError,
+		formState: { errors }
+	} = useForm<FormSingInUser>({ mode: 'onChange' })
+
+	const rules = {
+		email: {
+			required: { value: true, message: 'Campo requerido' },
+			pattern: {
+				value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+				message: 'Invalid email address'
+			}
+		},
+		password: {
+			required: { value: true, message: 'Campo requerido' }
+		}
+	}
+
+	const handleSubmitForm = async (data: FormSingInUser) => {
+		setLoading(true)
+		const response = await signIn('credentials', {
+			redirect: false,
+			email: data.email,
+			password: data.password
+		})
+		console.warn('🚀 ~ handleSubmitForm ~ response:', response)
+		if (response?.error) {
+			setError('email', { message: response.error })
+			setLoading(false)
+		} else {
+			router.push('/')
+		}
+	}
+
+	return loading ? (
+		<Loading />
+	) : (
 		<div className="h-full">
 			<div className="flex min-h-full flex-1">
 				<div className="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
@@ -16,54 +68,37 @@ export default function Singin() {
 
 						<div className="mt-10">
 							<div>
-								<form action="#" method="POST" className="space-y-6">
-									<div>
-										<label
-											htmlFor="email"
-											className="block text-sm font-medium leading-6 text-gray-900"
-										>
-											Correo electrónico
-										</label>
-										<div className="mt-2">
-											<input
-												id="email"
-												name="email"
-												type="email"
-												autoComplete="email"
-												required
-												className="block w-full rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-											/>
-										</div>
-									</div>
+								<form
+									className="space-y-6"
+									onSubmit={handleSubmit(handleSubmitForm)}
+								>
+									<Input
+										type="email"
+										name="email"
+										label="Correo"
+										register={register}
+										rules={rules.email}
+										error={errors.email}
+										placeholder="correo@mail.com"
+									/>
 
-									<div>
-										<label
-											htmlFor="password"
-											className="block text-sm font-medium leading-6 text-gray-900"
-										>
-											Contraseña
-										</label>
-										<div className="mt-2">
-											<input
-												id="password"
-												name="password"
-												type="password"
-												autoComplete="current-password"
-												required
-												className="block w-full rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-											/>
-										</div>
-									</div>
+									<InputPassword
+										name="password"
+										label="Contraseña"
+										register={register}
+										rules={rules.password}
+										error={errors.password}
+									/>
 
 									<div className="flex flex-col items-center justify-between">
-										<div className="text-sm leading-6">
+										{/* <div className="text-sm leading-6">
 											<Link
 												href="/auth/forgotPassword"
 												className="font-semibold text-indigo-600 hover:text-indigo-500"
 											>
 												¿Olvidaste tu contraseña?
 											</Link>
-										</div>
+										</div> */}
 										<div className="text-sm leading-6">
 											<Link
 												href="/auth/registration"
