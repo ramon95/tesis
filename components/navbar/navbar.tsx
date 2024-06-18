@@ -1,17 +1,23 @@
 'use client'
 
-import { Dialog, Popover, Transition } from '@headlessui/react'
+import { Dialog, Menu, Popover, Transition } from '@headlessui/react'
 import {
+	ArrowLeftStartOnRectangleIcon,
 	Bars3Icon,
+	ChevronDownIcon,
+	Cog6ToothIcon,
 	ShoppingBagIcon,
+	ShoppingCartIcon,
 	XMarkIcon
 } from '@heroicons/react/24/outline'
+import { signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { Fragment, useState } from 'react'
 import { LinkMenu } from '..'
 
 export const Navbar = () => {
 	const [open, setOpen] = useState(false)
+	const { data, status } = useSession()
 	const navigation = [
 		{ name: 'Ropa y accesorios', href: '/clothesAccesories' },
 		{ name: 'Elctrodomesticos y repuestos', href: '/appliancesSpareParts' },
@@ -93,8 +99,49 @@ export const Navbar = () => {
 					<div className="bg-gray-900 hidden lg:block">
 						<div className="mx-auto flex h-10 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
 							<div className="flex justify-end w-full space-x-6">
-								<LinkMenu name="Entrar" href="/auth/singin" />
-								<LinkMenu name="Crear cuenta" href="/auth/registration" />
+								{status === 'unauthenticated' ? (
+									<>
+										<LinkMenu name="Entrar" href="/auth/singin" />
+										<LinkMenu name="Crear cuenta" href="/auth/registration" />
+									</>
+								) : (
+									<Menu>
+										<Menu.Button className="relative flex item-center gap-2">
+											Bienvenido {data?.user?.name}{' '}
+											<ChevronDownIcon className="h-6 w-6" aria-hidden="true" />
+										</Menu.Button>
+										<Menu.Items className="absolute bg-gray-700 -bottom-[55px] p-4 rounded">
+											<Menu.Item>
+												<a
+													className="flex items-center gap-2 data-[focus]:bg-blue-100 mb-2"
+													href="/settings"
+												>
+													<Cog6ToothIcon className="h-6 w-6" />
+													Perfil
+												</a>
+											</Menu.Item>
+											<Menu.Item>
+												<a
+													className="flex items-center gap-2 data-[focus]:bg-blue-100 mb-2"
+													href="/support"
+												>
+													<ShoppingCartIcon className="h-6 w-6" />
+													Mis compras
+												</a>
+											</Menu.Item>
+											<Menu.Item>
+												<button
+													type="button"
+													className="flex items-center gap-2 data-[focus]:bg-blue-100"
+													onClick={() => signOut()}
+												>
+													<ArrowLeftStartOnRectangleIcon className="h-6 w-6" />
+													Salir
+												</button>
+											</Menu.Item>
+										</Menu.Items>
+									</Menu>
+								)}
 							</div>
 						</div>
 					</div>
@@ -132,7 +179,6 @@ export const Navbar = () => {
 									</div>
 
 									<div className="flex flex-1 items-center justify-end">
-										<LinkMenu name="Buscar" href="#" class2 />
 										<div className="flex items-center lg:ml-8">
 											{/* Cart */}
 											<div className="ml-4 flow-root lg:ml-8">
