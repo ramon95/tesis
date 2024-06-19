@@ -1,11 +1,11 @@
 'use client'
 
-import { Layout } from '@/components'
+import { Layout, MyShopping } from '@/components'
 
 export default function MyShoppingPage() {
 	return (
 		<Layout>
-			<h1>My shopping</h1>
+			<MyShopping />
 		</Layout>
 	)
 }
