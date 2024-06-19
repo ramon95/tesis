@@ -11,6 +11,8 @@ export const options: NextAuthOptions = {
 				password: { label: 'Password', type: 'password' }
 			},
 			async authorize(credentials) {
+				console.warn('🚀 ENV:', process.env)
+
 				const email = credentials?.email || ''
 				const password = credentials?.password || ''
 
