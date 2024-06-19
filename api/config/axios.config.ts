@@ -5,7 +5,7 @@ import axios, { AxiosInstance } from 'axios'
 import { AxiosConfigutationProps } from './axios.config.type'
 
 export const API = (props?: AxiosConfigutationProps): AxiosInstance => {
-	const baseURL = props?.customUrl ?? process.env.NEXT_PUBLIC_BASE_URL
+	const baseURL = props?.customUrl ?? process.env.NEXTAUTH_URL
 	const API_INSTANCE = axios.create({
 		baseURL
 	})
