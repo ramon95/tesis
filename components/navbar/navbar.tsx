@@ -149,7 +149,7 @@ export const Navbar = () => {
 											Bienvenido {data?.user?.name}{' '}
 											<ChevronDownIcon className="h-6 w-6" aria-hidden="true" />
 										</Menu.Button>
-										<Menu.Items className="absolute bg-gray-700 -bottom-[55px] p-4 rounded">
+										<Menu.Items className="absolute z-10 bg-gray-700 -bottom-[55px] p-4 rounded">
 											{userNavigation.map(item => (
 												<Menu.Item key={item.id}>
 													<Link
