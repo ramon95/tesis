@@ -19,10 +19,28 @@ export const Navbar = () => {
 	const [open, setOpen] = useState(false)
 	const { data, status } = useSession()
 	const navigation = [
-		{ name: 'Ropa y accesorios', href: '/clothesAccesories' },
-		{ name: 'Elctrodomesticos y repuestos', href: '/appliancesSpareParts' },
-		{ name: 'Perfumeria', href: '/perfumery' },
-		{ name: 'Alimentos no perecederos', href: '/nonperishableFood' }
+		{ id: 0, name: 'Ropa y accesorios', href: '/clothesAccesories' },
+		{
+			id: 1,
+			name: 'Elctrodomesticos y repuestos',
+			href: '/appliancesSpareParts'
+		},
+		{ id: 2, name: 'Perfumeria', href: '/perfumery' },
+		{ id: 3, name: 'Alimentos no perecederos', href: '/nonperishableFood' }
+	]
+	const userNavigation = [
+		{
+			id: 0,
+			name: 'Perfil',
+			href: '/profile',
+			icon: <Cog6ToothIcon className="h-6 w-6" />
+		},
+		{
+			id: 1,
+			name: 'Mi compras',
+			href: '/myShoppings',
+			icon: <ShoppingCartIcon className="h-6 w-6" />
+		}
 	]
 	return (
 		<div>
@@ -66,27 +84,48 @@ export const Navbar = () => {
 								<div className="space-y-6 border-t border-gray-200 px-4 py-6">
 									{navigation.map(page => (
 										<div key={page.name} className="flow-root">
-											<a
+											<Link
 												href={page.href}
 												className="-m-2 block p-2 font-medium text-gray-900"
 											>
 												{page.name}
-											</a>
+											</Link>
 										</div>
 									))}
 								</div>
 
 								<div className="space-y-6 border-t border-gray-200 px-4 py-6">
-									<div className="flow-root">
-										<LinkMenu
-											name="Crear cuenta"
-											href="/auth/registration"
-											mobile
-										/>
-									</div>
-									<div className="flow-root">
-										<LinkMenu name="Entrar" href="/auth/singin" mobile />
-									</div>
+									{status === 'unauthenticated' ? (
+										<>
+											<div className="flow-root">
+												<LinkMenu
+													name="Crear cuenta"
+													href="/auth/registration"
+													mobile
+												/>
+											</div>
+											<div className="flow-root">
+												<LinkMenu name="Entrar" href="/auth/singin" mobile />
+											</div>
+										</>
+									) : (
+										<>
+											{userNavigation.map(item => (
+												<div className="flow-root" key={item.id}>
+													<LinkMenu name={item.name} href={item.href} mobile />
+												</div>
+											))}
+											<div className="flow-root">
+												<button
+													type="button"
+													className="-m-2 block p-2 font-medium text-gray-900"
+													onClick={() => signOut()}
+												>
+													Salir
+												</button>
+											</div>
+										</>
+									)}
 								</div>
 							</Dialog.Panel>
 						</Transition.Child>
@@ -111,24 +150,17 @@ export const Navbar = () => {
 											<ChevronDownIcon className="h-6 w-6" aria-hidden="true" />
 										</Menu.Button>
 										<Menu.Items className="absolute bg-gray-700 -bottom-[55px] p-4 rounded">
-											<Menu.Item>
-												<a
-													className="flex items-center gap-2 data-[focus]:bg-blue-100 mb-2"
-													href="/settings"
-												>
-													<Cog6ToothIcon className="h-6 w-6" />
-													Perfil
-												</a>
-											</Menu.Item>
-											<Menu.Item>
-												<a
-													className="flex items-center gap-2 data-[focus]:bg-blue-100 mb-2"
-													href="/support"
-												>
-													<ShoppingCartIcon className="h-6 w-6" />
-													Mis compras
-												</a>
-											</Menu.Item>
+											{userNavigation.map(item => (
+												<Menu.Item key={item.id}>
+													<Link
+														className="flex items-center gap-2 data-[focus]:bg-blue-100 mb-2"
+														href={item.href}
+													>
+														{item.icon}
+														{item.name}
+													</Link>
+												</Menu.Item>
+											))}
 											<Menu.Item>
 												<button
 													type="button"
