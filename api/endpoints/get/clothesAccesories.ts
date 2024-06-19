@@ -13,7 +13,9 @@ export const getClothesAccesories = async (): Promise<
 	ClothesAccessoriesResponse[]
 > => {
 	let response: ClothesAccessoriesResponse[] | undefined
-	await API()
+	await API({
+		customUrl: 'https://6612b5e853b0d5d80f6637b8.mockapi.io/api/v1/'
+	})
 		.get(`/clothesAccesories`)
 		.then((res: { data: ClothesAccessoriesResponse[] }) => {
 			response = res.data as ClothesAccessoriesResponse[]

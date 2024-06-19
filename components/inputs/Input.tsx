@@ -13,18 +13,15 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 	value?: string
 	classNameContainer?: string
 	disabled?: boolean
-	iconClassName?: string
 	rules?: Record<string, unknown>
 	name: string
 	error?: FieldError | undefined
 	register?: UseFormRegister<any>
-	registerType?: boolean
 	url?: boolean
 }
 
 export const Input: React.FC<InputProps> = ({
 	className,
-	registerType = false,
 	type,
 	name,
 	label,
@@ -34,7 +31,6 @@ export const Input: React.FC<InputProps> = ({
 	disabled,
 	onChange,
 	value,
-	iconClassName,
 	classNameContainer,
 	rules,
 	error,
