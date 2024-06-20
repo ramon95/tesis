@@ -1,8 +1,8 @@
 import { API } from '@/api'
 
-export interface FormViewUser {
+export interface registerUserBody {
 	name: string
-	lastname: string
+	lastName: string
 	email: string
 	password: string
 	rol: string
@@ -16,11 +16,11 @@ interface RegisterResponse {
 }
 
 export const registerUser = async (
-	body: FormViewUser
+	body: registerUserBody
 ): Promise<RegisterResponse> => {
 	let response: RegisterResponse | undefined
 	await API()
-		.post(`api/auth/registration`, body)
+		.post(`/api/auth/registration`, body)
 		.then(res => {
 			response = res.data as RegisterResponse
 		})

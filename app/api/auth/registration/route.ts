@@ -3,15 +3,15 @@ import { ObjectId } from 'mongodb'
 import { NextResponse } from 'next/server'
 
 export async function POST(request: Request) {
-	const { name, lastname, email, password } = await request.json()
+	const { name, lastName, email, password } = await request.json()
 	const errors: Array<Error> = []
 
 	if (!name) {
 		errors.push({ field: 'name', message: 'Nombre Requerido' })
 	}
 
-	if (!lastname) {
-		errors.push({ field: 'lastname', message: 'Apellido Requerido' })
+	if (!lastName) {
+		errors.push({ field: 'lastName', message: 'Apellido Requerido' })
 	}
 
 	if (!email) {
@@ -43,7 +43,7 @@ export async function POST(request: Request) {
 	const newUser = {
 		_id: new ObjectId(),
 		name,
-		lastname,
+		lastName,
 		email: email.toLowerCase(),
 		password: generateHash(password),
 		rol: 'user',

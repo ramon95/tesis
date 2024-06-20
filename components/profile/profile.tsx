@@ -1,11 +1,21 @@
 'use client'
 
-import { Input } from '@/components'
+import {
+	GET_USER_PROFILE,
+	editPassword,
+	editProfile,
+	getUserProfile
+} from '@/api'
+import { Input, SkeletonItemCard } from '@/components'
+import { regexPassword } from '@/utilsFront'
+import { useQuery } from '@tanstack/react-query'
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
 
 interface FormProfileUser {
 	name: string
-	lastname: string
+	lastName: string
 	email: string
 }
 
@@ -16,13 +26,22 @@ interface FormPasswordUser {
 }
 
 export const Profile = () => {
+	const { data, isLoading, refetch } = useQuery({
+		queryKey: [GET_USER_PROFILE],
+		queryFn: () => getUserProfile(),
+		retry: false
+	})
+
 	const {
 		register: registerProfile,
+		setValue: setValueProfile,
 		handleSubmit: handleSubmitProfile,
 		formState: { errors: errorsProfile }
 	} = useForm<FormProfileUser>({ mode: 'onChange' })
 
 	const {
+		watch: watchPassword,
+		setValue: setValuePassword,
 		register: registerPassword,
 		handleSubmit: handleSubmitPassword,
 		formState: { errors: errorsPassword }
@@ -32,7 +51,7 @@ export const Profile = () => {
 		name: {
 			required: { value: true, message: 'Campo requerido' }
 		},
-		lastname: {
+		lastName: {
 			required: { value: true, message: 'Campo requerido' }
 		},
 		email: {
@@ -47,18 +66,61 @@ export const Profile = () => {
 	const rulesPassword = {
 		oldPassword: {
 			required: { value: true, message: 'Campo requerido' }
+		},
+		newPassword: {
+			required: { value: true, message: 'Campo requerido' },
+			pattern: {
+				value: regexPassword,
+				message:
+					'La contraseña debe de incluir una combinacion de letras mayusculas y minusculas, numeros y simbolos'
+			}
+		},
+		repetPassword: {
+			required: { value: true, message: 'Campo requerido' },
+			validate: (value: string) =>
+				value === watchPassword('newPassword') || 'Las contraseñas no coinciden'
 		}
 	}
 
-	const handleSubmitFormProfile = (dataForm: FormProfileUser) => {
-		console.warn('🚀 ~ handleSubmitForm ~ dataForm:', dataForm)
+	const handleSubmitFormProfile = async (dataForm: FormProfileUser) => {
+		const res = await editProfile(dataForm)
+		if (res.errors) {
+			toast.error(res.errors[0].message, {
+				position: 'top-center'
+			})
+		} else {
+			toast.success(res.message, {
+				position: 'top-center'
+			})
+			refetch()
+		}
 	}
 
-	const handleSubmitFormPassword = (dataForm: FormPasswordUser) => {
-		console.warn('🚀 ~ handleSubmitForm ~ dataForm:', dataForm)
+	const handleSubmitFormPassword = async (dataForm: FormPasswordUser) => {
+		const res = await editPassword(dataForm)
+		if (res.errors) {
+			toast.error(res.errors[0].message, {
+				position: 'top-center'
+			})
+		} else {
+			toast.success(res.message, {
+				position: 'top-center'
+			})
+			setValuePassword('oldPassword', '')
+			setValuePassword('newPassword', '')
+			setValuePassword('repetPassword', '')
+		}
 	}
 
-	return (
+	useEffect(() => {
+		setValueProfile('name', data?.name as string)
+		setValueProfile('lastName', data?.lastName as string)
+		setValueProfile('email', data?.email as string)
+	}, [data])
+
+	return isLoading ? (
+		<SkeletonItemCard />
+	) : (
 		<div>
 			<h2 className="text-base font-semibold leading-7 text-gray-900 mb-2 border-b border-gray-300">
 				Mi perfil
@@ -79,12 +141,12 @@ export const Profile = () => {
 				/>
 
 				<Input
-					name="lastname"
+					name="lastName"
 					label="Apellido"
 					placeholder="Perez"
 					register={registerProfile}
-					rules={rulesProfile.lastname}
-					error={errorsProfile.lastname}
+					rules={rulesProfile.lastName}
+					error={errorsProfile.lastName}
 				/>
 
 				<Input
@@ -113,6 +175,7 @@ export const Profile = () => {
 
 			<form onSubmit={handleSubmitPassword(handleSubmitFormPassword)}>
 				<Input
+					url
 					name="oldPassword"
 					label="Contraseña anterior"
 					register={registerPassword}
@@ -121,17 +184,19 @@ export const Profile = () => {
 				/>
 
 				<Input
+					url
 					name="newPassword"
 					label="Contraseña Nueva"
 					register={registerPassword}
-					rules={rulesPassword.oldPassword}
+					rules={rulesPassword.newPassword}
 					error={errorsPassword.newPassword}
 				/>
 
 				<Input
+					url
 					name="repetPassword"
 					register={registerPassword}
-					rules={rulesPassword.oldPassword}
+					rules={rulesPassword.repetPassword}
 					label="Repite la contraseña nueva"
 					error={errorsPassword.repetPassword}
 				/>
