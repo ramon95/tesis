@@ -11,8 +11,6 @@ export const options: NextAuthOptions = {
 				password: { label: 'Password', type: 'password' }
 			},
 			async authorize(credentials) {
-				console.warn('🚀 ENV:', process.env)
-
 				const email = credentials?.email || ''
 				const password = credentials?.password || ''
 
@@ -21,9 +19,7 @@ export const options: NextAuthOptions = {
 				}
 
 				const db = await connectToDatabase()
-
 				const result = await db.collection('users').findOne({ email })
-				console.warn('🚀 ~ authorize ~ result:', result)
 
 				if (!result) {
 					throw new Error('Credenciales no válidas')

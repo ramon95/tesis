@@ -28,7 +28,7 @@ export default function ToastProvider({ children }: ToastProviderProps) {
 				}
 				bodyClassName="text-sm text-center"
 				position="top-center"
-				autoClose={30000}
+				autoClose={3000}
 				hideProgressBar
 				newestOnTop={false}
 				closeOnClick

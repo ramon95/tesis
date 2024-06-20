@@ -2,6 +2,7 @@
 
 import { registerUser } from '@/api'
 import { Input, InputPassword } from '@/components'
+import { regexPassword } from '@/utilsFront'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
@@ -9,7 +10,7 @@ import { toast } from 'react-toastify'
 
 interface FormRegisterUser {
 	name: string
-	lastname: string
+	lastName: string
 	email: string
 	password: string
 	rol: string
@@ -27,7 +28,7 @@ export default function Registration() {
 		name: {
 			required: { value: true, message: 'Campo requerido' }
 		},
-		lastname: {
+		lastName: {
 			required: { value: true, message: 'Campo requerido' }
 		},
 		email: {
@@ -44,7 +45,7 @@ export default function Registration() {
 				message: 'La contraseña debe tener al menos 8 caracteres'
 			},
 			pattern: {
-				value: /(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&#<>+_{}.])/,
+				value: regexPassword,
 				message:
 					'La contraseña debe de incluir una combinacion de letras mayusculas y minusculas, numeros y simbolos'
 			}
@@ -85,12 +86,12 @@ export default function Registration() {
 					/>
 
 					<Input
-						name="lastname"
+						name="lastName"
 						label="Apellido"
 						register={register}
 						placeholder="Perez"
-						error={errors.lastname}
-						rules={rules.lastname}
+						error={errors.lastName}
+						rules={rules.lastName}
 					/>
 
 					<Input
