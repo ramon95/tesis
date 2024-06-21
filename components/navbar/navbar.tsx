@@ -16,10 +16,12 @@ import { useQuery } from '@tanstack/react-query'
 import clsx from 'clsx'
 import { signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { Fragment, useState } from 'react'
 import { LinkMenu } from '..'
 
 export const Navbar = () => {
+	const pathname = usePathname()
 	const { data, status } = useSession()
 	const [open, setOpen] = useState(false)
 	const { data: dataUser } = useQuery({
@@ -162,7 +164,12 @@ export const Navbar = () => {
 											<Link
 												key={page.name}
 												href={page.href}
-												className="flex items-center text-sm font-medium text-white hover:text-green-300"
+												className={clsx(
+													pathname !== page.href
+														? 'text-white hover:text-green-300'
+														: 'text-green-300',
+													'flex items-center text-sm font-medium '
+												)}
 											>
 												{page.name}
 											</Link>

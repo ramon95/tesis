@@ -4,6 +4,43 @@ import { getServerSession } from 'next-auth'
 import { NextResponse } from 'next/server'
 import { options } from '../auth/[...nextauth]/options'
 
+export async function GET(request: Request) {
+	const { searchParams } = new URL(request.url)
+	const typeProduct = searchParams.get('typeProduct')
+	const sesion = await getServerSession(options)
+	if (sesion) {
+		const {
+			user: { email }
+		} = sesion as { user: { email?: string } }
+
+		const dbg = await connectToDatabase()
+
+		const user = await dbg.collection('users').findOne({ email })
+
+		if (!user) {
+			return NextResponse.json(
+				{
+					error: 'Usuario no encontrado'
+				},
+				{ status: 400 }
+			)
+		}
+
+		const products = await dbg
+			.collection('products')
+			.find({ typeProduct })
+			.toArray()
+
+		return NextResponse.json(products)
+	}
+	return NextResponse.json(
+		{
+			error: 'Usuario no autenticado'
+		},
+		{ status: 400 }
+	)
+}
+
 export async function POST(request: Request) {
 	const { name, description, image, price, typeProduct } = await request.json()
 	const errors: Array<Error> = []
@@ -41,19 +78,22 @@ export async function POST(request: Request) {
 		}
 
 		if (!description) {
-			errors.push({ field: 'lastName', message: 'Apellido Requerido' })
+			errors.push({ field: 'description', message: 'Descripcion Requerida' })
 		}
 
 		if (!image) {
-			errors.push({ field: 'email', message: 'Email Requerido' })
+			errors.push({ field: 'image', message: 'Imagen Requerida' })
 		}
 
 		if (!price) {
-			errors.push({ field: 'password', message: 'Contraseña Requerida' })
+			errors.push({ field: 'price', message: 'Precio Requerido' })
 		}
 
 		if (!typeProduct) {
-			errors.push({ field: 'password', message: 'Contraseña Requerida' })
+			errors.push({
+				field: 'typeProduct',
+				message: 'Tipo de productro Requerido'
+			})
 		}
 
 		const currentDate = Date.now()
@@ -69,7 +109,7 @@ export async function POST(request: Request) {
 		}
 
 		try {
-			const response = await db.collection('product').insertOne(newProduct)
+			const response = await db.collection('products').insertOne(newProduct)
 			return NextResponse.json({
 				message: 'Productro creado con éxito',
 				productId: response.insertedId,
