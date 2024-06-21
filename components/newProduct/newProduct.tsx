@@ -1,6 +1,8 @@
+import { createNewProduct } from '@/api'
 import { Input, InputSelect, InputTextArea } from '@/components'
 import Image from 'next/image'
 import { useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
 
 interface FormCreateProduct {
 	name: string
@@ -12,9 +14,9 @@ interface FormCreateProduct {
 
 export const NewProduct = () => {
 	const {
-		register,
 		watch,
-		// setValue,
+		register,
+		setValue,
 		handleSubmit,
 		formState: { errors }
 	} = useForm<FormCreateProduct>({ mode: 'onChange' })
@@ -46,8 +48,22 @@ export const NewProduct = () => {
 		}
 	}
 
-	const handleSubmitForm = (dataForm: FormCreateProduct) => {
-		console.warn('🚀 ~ handleSubmitForm ~ dataForm:', dataForm)
+	const handleSubmitForm = async (dataForm: FormCreateProduct) => {
+		const res = await createNewProduct(dataForm)
+		if (res.errors) {
+			toast.error(res.errors[0].message, {
+				position: 'top-center'
+			})
+		} else {
+			toast.success(res.message, {
+				position: 'top-center'
+			})
+			setValue('name', '')
+			setValue('description', '')
+			setValue('image', '')
+			setValue('price', '')
+			setValue('typeProduct', '')
+		}
 	}
 
 	return (
