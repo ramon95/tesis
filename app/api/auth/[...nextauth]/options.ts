@@ -1,6 +1,7 @@
 import { connectToDatabase, validPassword } from '@/utils'
 import { NextAuthOptions, User } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
+import { cookies } from 'next/headers'
 
 export const options: NextAuthOptions = {
 	providers: [
@@ -26,10 +27,12 @@ export const options: NextAuthOptions = {
 				}
 
 				const valid = validPassword(password, result?.password)
+				cookies().set('rol', result.rol)
+				cookies().set('email', result.email)
+				cookies().set('name', result.name)
 
 				if (valid && result) {
 					return {
-						id: result._id,
 						email: result.email,
 						name: result.name
 					} as unknown as User

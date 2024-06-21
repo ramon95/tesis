@@ -6,6 +6,7 @@ export interface UserProfileResponse {
 	lastName: string
 	email: string
 	id: string
+	rol: string
 }
 
 export const getUserProfile = async (): Promise<UserProfileResponse> => {
