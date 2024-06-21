@@ -129,7 +129,7 @@ export const Navbar = () => {
 											<div className="flow-root">
 												<LinkMenu
 													mobile
-													href="/newItem"
+													href="/newProduct"
 													name="Agregar productos"
 												/>
 											</div>
@@ -202,7 +202,7 @@ export const Navbar = () => {
 													<Menu.Item>
 														<Link
 															className="flex items-center gap-2 data-[focus]:bg-blue-100 mb-2"
-															href="/newItem"
+															href="/newProduct"
 														>
 															<FolderPlusIcon className="h-6 w-6" />
 															Agregar productos
