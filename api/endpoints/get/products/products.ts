@@ -7,7 +7,7 @@ export interface ProductsResponse {
 	image: string
 	price: string
 	description: string
-	id: string
+	_id: string
 }
 
 export const getProducts = async (
@@ -16,8 +16,8 @@ export const getProducts = async (
 	let response: ProductsResponse[] | undefined
 	await API()
 		.get(`/api/products?typeProduct=${typeProduct}`)
-		.then((res: { data: ProductsResponse[] }) => {
-			response = res.data as ProductsResponse[]
+		.then(res => {
+			response = res.data.products as ProductsResponse[]
 		})
 		.catch((error: { response: { data: ProductsResponse[] | undefined } }) => {
 			response = error.response.data
@@ -25,21 +25,15 @@ export const getProducts = async (
 	return response as ProductsResponse[]
 }
 
-// export const getClothesAccesoriesById = async (
-// 	id: string
-// ): Promise<ClothesAccessoriesResponse> => {
-// 	let response: ClothesAccessoriesResponse | undefined
-// 	await API()
-// 		.get(`/clothesAccesories/${id}`)
-// 		.then((res: { data: ClothesAccessoriesResponse }) => {
-// 			response = res.data as ClothesAccessoriesResponse
-// 		})
-// 		.catch(
-// 			(error: {
-// 				response: { data: ClothesAccessoriesResponse | undefined }
-// 			}) => {
-// 				response = error.response.data
-// 			}
-// 		)
-// 	return response as ClothesAccessoriesResponse
-// }
+export const getProductById = async (id: string): Promise<ProductsResponse> => {
+	let response: ProductsResponse | undefined
+	await API()
+		.get(`/api/product?id=${id}`)
+		.then(res => {
+			response = res.data.product as ProductsResponse
+		})
+		.catch((error: { response: { data: ProductsResponse | undefined } }) => {
+			response = error.response.data
+		})
+	return response as ProductsResponse
+}

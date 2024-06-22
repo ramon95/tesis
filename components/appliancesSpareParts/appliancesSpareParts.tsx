@@ -17,7 +17,7 @@ export const AppliancesSpareParts = () => {
 				<SkeletonItemCard />
 			) : (
 				data &&
-				data.map(product => <ItemCard key={product.id} product={product} />)
+				data.map(product => <ItemCard key={product._id} product={product} />)
 			)}
 		</div>
 	)

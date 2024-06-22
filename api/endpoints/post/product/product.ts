@@ -20,7 +20,7 @@ export const createNewProduct = async (
 ): Promise<createNewProductResponse> => {
 	let response: createNewProductResponse | undefined
 	await API()
-		.post(`/api/products`, body)
+		.post(`/api/product`, body)
 		.then(res => {
 			response = res.data as createNewProductResponse
 		})
