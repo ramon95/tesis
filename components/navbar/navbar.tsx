@@ -165,9 +165,11 @@ export const Navbar = () => {
 												key={page.name}
 												href={page.href}
 												className={clsx(
-													pathname !== page.href
-														? 'text-white hover:text-green-300'
-														: 'text-green-300',
+													pathname === page.href ||
+														(page.href !== '/' &&
+															pathname.startsWith(page.href))
+														? 'text-green-300'
+														: 'text-white hover:text-green-300',
 													'flex items-center text-sm font-medium '
 												)}
 											>

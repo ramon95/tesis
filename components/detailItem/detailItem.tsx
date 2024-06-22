@@ -2,6 +2,7 @@ import { ProductsResponse } from '@/api'
 import { RadioButtom } from '@/components'
 import clsx from 'clsx'
 import Image from 'next/image'
+import { usePathname } from 'next/navigation'
 import { Dispatch, SetStateAction, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 
@@ -12,6 +13,7 @@ interface DetailItemProps {
 }
 
 export const DetailItem: React.FC<DetailItemProps> = ({ data }) => {
+	const pathname = usePathname()
 	const sizes = [
 		{ name: 'S' },
 		{ name: 'M' },
@@ -71,18 +73,20 @@ export const DetailItem: React.FC<DetailItemProps> = ({ data }) => {
 					</section>
 					<div className="mt-10 lg:col-start-1 lg:row-start-2 lg:max-w-lg lg:self-start">
 						<form onSubmit={onSubmit}>
-							<div className="sm:flex sm:justify-between">
-								<RadioButtom
-									name="size"
-									label="Tallas"
-									options={sizes}
-									control={control}
-									error={errors.size}
-									rules={{
-										required: 'Selecciona una talla'
-									}}
-								/>
-							</div>
+							{pathname.includes('clothes') && (
+								<div className="sm:flex sm:justify-between">
+									<RadioButtom
+										name="size"
+										label="Tallas"
+										options={sizes}
+										control={control}
+										error={errors.size}
+										rules={{
+											required: 'Selecciona una talla'
+										}}
+									/>
+								</div>
+							)}
 							<div className="mt-10">
 								<button
 									type="submit"

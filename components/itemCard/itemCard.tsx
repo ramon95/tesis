@@ -7,9 +7,13 @@ import { useEffect } from 'react'
 
 interface ItemCardProps {
 	product: ProductsResponse
+	urlDetailProduct: string
 }
 
-export const ItemCard: React.FC<ItemCardProps> = ({ product }) => {
+export const ItemCard: React.FC<ItemCardProps> = ({
+	product,
+	urlDetailProduct
+}) => {
 	useEffect(() => {
 		console.warn('🚀 ~ product:', product)
 	}, [product])
@@ -28,7 +32,7 @@ export const ItemCard: React.FC<ItemCardProps> = ({ product }) => {
 			<div className="mt-4 flex justify-between">
 				<div>
 					<h3 className="text-sm text-gray-700">
-						<Link href={`/clothesAccesories/${product._id}`}>
+						<Link href={`${urlDetailProduct}/${product._id}`}>
 							<span aria-hidden="true" className="absolute inset-0" />
 							{product.name}
 						</Link>

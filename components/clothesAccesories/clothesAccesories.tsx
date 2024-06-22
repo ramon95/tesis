@@ -22,7 +22,13 @@ export const ClothesAccesories = () => {
 				<SkeletonItemCard />
 			) : (
 				data &&
-				data.map(product => <ItemCard key={product._id} product={product} />)
+				data.map(product => (
+					<ItemCard
+						key={product._id}
+						product={product}
+						urlDetailProduct="/clothesAccesories"
+					/>
+				))
 			)}
 		</div>
 	)
