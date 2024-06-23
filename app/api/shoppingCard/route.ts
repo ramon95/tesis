@@ -29,8 +29,6 @@ export async function GET() {
 			.find({ userId: user._id.toString() })
 			.toArray()
 
-		console.warn('🚀 ~ GET ~ products:', products)
-
 		return NextResponse.json({ products })
 	}
 	return NextResponse.json(
@@ -96,7 +94,7 @@ export async function POST(request: Request) {
 			quantity,
 			productId,
 			typeProduct,
-			size: size.name,
+			size: size ? size.name : null,
 			userId: result._id.toString(),
 			createdAt: currentDate,
 			updatedAt: currentDate

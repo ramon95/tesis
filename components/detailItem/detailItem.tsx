@@ -1,9 +1,12 @@
 import {
+	GET_USER_SHOOPING_CAR,
 	ProductsResponse,
 	createShoppingCard,
-	createShoppingCardBody
+	createShoppingCardBody,
+	getProductsShoppingCard
 } from '@/api'
 import { Input, RadioButtom } from '@/components'
+import { useQuery } from '@tanstack/react-query'
 import clsx from 'clsx'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
@@ -36,14 +39,31 @@ export const DetailItem: React.FC<DetailItemProps> = ({ data }) => {
 		mode: 'onChange'
 	})
 
+	const { refetch } = useQuery({
+		queryKey: [GET_USER_SHOOPING_CAR],
+		queryFn: () => getProductsShoppingCard(),
+		retry: false
+	})
+
 	const onSubmit = handleSubmit(async dataForm => {
-		const body = {
-			size: dataForm.size,
-			quantity: Number(dataForm.quantity),
-			productId: data?._id as string,
-			typeProduct: pathname.split('/')[1] as string,
-			total: Number(dataForm.quantity) * Number(data?.price as string)
-		} as createShoppingCardBody
+		const typeProduct = pathname.split('/')[1] as string
+		let body
+		if (typeProduct === 'clothesAccesories') {
+			body = {
+				size: dataForm.size,
+				quantity: Number(dataForm.quantity),
+				productId: data?._id as string,
+				typeProduct: pathname.split('/')[1] as string,
+				total: Number(dataForm.quantity) * Number(data?.price as string)
+			} as createShoppingCardBody
+		} else {
+			body = {
+				quantity: Number(dataForm.quantity),
+				productId: data?._id as string,
+				typeProduct: pathname.split('/')[1] as string,
+				total: Number(dataForm.quantity) * Number(data?.price as string)
+			} as createShoppingCardBody
+		}
 		const res = await createShoppingCard(body)
 		if (res.errors) {
 			toast.error(res.errors[0].message, {
@@ -55,6 +75,7 @@ export const DetailItem: React.FC<DetailItemProps> = ({ data }) => {
 			})
 			setValue('size', '')
 			setValue('quantity', '')
+			refetch()
 		}
 	})
 

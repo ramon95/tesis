@@ -1,12 +1,12 @@
 'use client'
 
-import { GET_NONPERSISHABLE_FOOD, getProducts } from '@/api'
+import { GET_PRODUCT, getProducts } from '@/api'
 import { ItemCard, SkeletonItemCard } from '@/components'
 import { useQuery } from '@tanstack/react-query'
 
 export const NonperishableFood = () => {
 	const { data, isLoading } = useQuery({
-		queryKey: [GET_NONPERSISHABLE_FOOD],
+		queryKey: [GET_PRODUCT],
 		queryFn: () => getProducts('nonperishableFood'),
 		retry: false
 	})

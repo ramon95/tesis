@@ -1,7 +1,7 @@
 import { API } from '@/api'
 
 export interface createShoppingCardBody {
-	size: string
+	size?: string
 	quantity: number
 	productId: string
 	typeProduct: string

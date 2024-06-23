@@ -22,7 +22,7 @@ import clsx from 'clsx'
 import { signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment, useState } from 'react'
 import { LinkMenu } from '..'
 
 export const Navbar = () => {
@@ -66,10 +66,6 @@ export const Navbar = () => {
 			icon: <ShoppingBagIcon className="h-6 w-6" />
 		}
 	]
-
-	useEffect(() => {
-		console.warn('🚀 ~ Navbar ~ dataShoppingCard:', dataShoppingCard)
-	}, [dataShoppingCard])
 
 	return (
 		<div>
