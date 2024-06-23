@@ -1,9 +1,9 @@
 import {
 	GET_USER_SHOOPING_CAR,
 	ProductsResponse,
-	createShoppingCard,
-	createShoppingCardBody,
-	getProductsShoppingCard
+	createShoppingCar,
+	createShoppingCarBody,
+	getProductsShoppingCar
 } from '@/api'
 import { Input, RadioButtom } from '@/components'
 import { useQuery } from '@tanstack/react-query'
@@ -41,7 +41,7 @@ export const DetailItem: React.FC<DetailItemProps> = ({ data }) => {
 
 	const { refetch } = useQuery({
 		queryKey: [GET_USER_SHOOPING_CAR],
-		queryFn: () => getProductsShoppingCard(),
+		queryFn: () => getProductsShoppingCar(),
 		retry: false
 	})
 
@@ -55,16 +55,16 @@ export const DetailItem: React.FC<DetailItemProps> = ({ data }) => {
 				productId: data?._id as string,
 				typeProduct: pathname.split('/')[1] as string,
 				total: Number(dataForm.quantity) * Number(data?.price as string)
-			} as createShoppingCardBody
+			} as createShoppingCarBody
 		} else {
 			body = {
 				quantity: Number(dataForm.quantity),
 				productId: data?._id as string,
 				typeProduct: pathname.split('/')[1] as string,
 				total: Number(dataForm.quantity) * Number(data?.price as string)
-			} as createShoppingCardBody
+			} as createShoppingCarBody
 		}
-		const res = await createShoppingCard(body)
+		const res = await createShoppingCar(body)
 		if (res.errors) {
 			toast.error(res.errors[0].message, {
 				position: 'top-center'

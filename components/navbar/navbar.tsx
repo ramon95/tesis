@@ -3,7 +3,7 @@
 import {
 	GET_USER_PROFILE,
 	GET_USER_SHOOPING_CAR,
-	getProductsShoppingCard,
+	getProductsShoppingCar,
 	getUserProfile
 } from '@/api'
 import { Dialog, Menu, Popover, Transition } from '@headlessui/react'
@@ -38,7 +38,7 @@ export const Navbar = () => {
 
 	const { data: dataShoppingCard } = useQuery({
 		queryKey: [GET_USER_SHOOPING_CAR],
-		queryFn: () => getProductsShoppingCard(),
+		queryFn: () => getProductsShoppingCar(),
 		retry: false
 	})
 	const navigation = [
@@ -62,7 +62,7 @@ export const Navbar = () => {
 		{
 			id: 1,
 			name: 'Mi compras',
-			href: '/myShoppings',
+			href: '/invoices',
 			icon: <ShoppingBagIcon className="h-6 w-6" />
 		}
 	]
@@ -253,10 +253,15 @@ export const Navbar = () => {
 										<button
 											type="button"
 											className="group -m-2 flex items-center p-2"
-											onClick={() => router.push('/myShoppings')}
+											onClick={() => router.push('/myShoppingCar')}
 										>
 											<ShoppingCartIcon
-												className="h-6 w-6 flex-shrink-0 text-white group-hover:text-green-300"
+												className={clsx(
+													pathname === '/myShoppingCar'
+														? 'text-green-300'
+														: 'text-white group-hover:text-green-300',
+													'h-6 w-6 flex-shrink-0'
+												)}
 												aria-hidden="true"
 											/>
 											<span className="ml-2 text-sm font-medium text-white group-hover:text-green-300">
@@ -290,9 +295,18 @@ export const Navbar = () => {
 										<div className="flex items-center lg:ml-8">
 											{/* Cart */}
 											<div className="ml-4 flow-root lg:ml-8">
-												<div className="group -m-2 flex items-center p-2">
+												<button
+													type="button"
+													className="group -m-2 flex items-center p-2"
+													onClick={() => router.push('/myShoppingCar')}
+												>
 													<ShoppingCartIcon
-														className="h-6 w-6 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
+														className={clsx(
+															pathname === '/myShoppingCar'
+																? 'text-gray-800'
+																: 'text-gray-700 group-hover:text-gray-800',
+															'h-6 w-6 flex-shrink-0 '
+														)}
 														aria-hidden="true"
 													/>
 													<span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">
@@ -301,7 +315,7 @@ export const Navbar = () => {
 													<span className="sr-only">
 														items in cart, view bag
 													</span>
-												</div>
+												</button>
 											</div>
 										</div>
 									</div>

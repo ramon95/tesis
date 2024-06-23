@@ -25,8 +25,8 @@ export async function GET() {
 		}
 
 		const products = await dbg
-			.collection('shoppingCard')
-			.find({ userId: user._id.toString() })
+			.collection('shoppingCar')
+			.find({ userId: user._id })
 			.toArray()
 
 		return NextResponse.json({ products })
@@ -92,16 +92,16 @@ export async function POST(request: Request) {
 			_id: new ObjectId(),
 			total,
 			quantity,
-			productId,
+			productId: new ObjectId(productId),
 			typeProduct,
 			size: size ? size.name : null,
-			userId: result._id.toString(),
+			userId: new ObjectId(result._id),
 			createdAt: currentDate,
 			updatedAt: currentDate
 		}
 
 		try {
-			const response = await db.collection('shoppingCard').insertOne(newProduct)
+			const response = await db.collection('shoppingCar').insertOne(newProduct)
 			return NextResponse.json({
 				message: 'Productro agregado al carrito con éxito',
 				shoppingCardId: response.insertedId
