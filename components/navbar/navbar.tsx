@@ -1,6 +1,11 @@
 'use client'
 
-import { GET_USER_PROFILE, getUserProfile } from '@/api'
+import {
+	GET_USER_PROFILE,
+	GET_USER_SHOOPING_CAR,
+	getProductsShoppingCard,
+	getUserProfile
+} from '@/api'
 import { Dialog, Menu, Popover, Transition } from '@headlessui/react'
 import {
 	ArrowLeftStartOnRectangleIcon,
@@ -16,17 +21,24 @@ import { useQuery } from '@tanstack/react-query'
 import clsx from 'clsx'
 import { signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { Fragment, useState } from 'react'
+import { usePathname, useRouter } from 'next/navigation'
+import { Fragment, useEffect, useState } from 'react'
 import { LinkMenu } from '..'
 
 export const Navbar = () => {
+	const router = useRouter()
 	const pathname = usePathname()
 	const { data, status } = useSession()
 	const [open, setOpen] = useState(false)
 	const { data: dataUser } = useQuery({
 		queryKey: [GET_USER_PROFILE],
 		queryFn: () => getUserProfile(),
+		retry: false
+	})
+
+	const { data: dataShoppingCard } = useQuery({
+		queryKey: [GET_USER_SHOOPING_CAR],
+		queryFn: () => getProductsShoppingCard(),
 		retry: false
 	})
 	const navigation = [
@@ -51,9 +63,13 @@ export const Navbar = () => {
 			id: 1,
 			name: 'Mi compras',
 			href: '/myShoppings',
-			icon: <ShoppingCartIcon className="h-6 w-6" />
+			icon: <ShoppingBagIcon className="h-6 w-6" />
 		}
 	]
+
+	useEffect(() => {
+		console.warn('🚀 ~ Navbar ~ dataShoppingCard:', dataShoppingCard)
+	}, [dataShoppingCard])
 
 	return (
 		<div>
@@ -238,16 +254,20 @@ export const Navbar = () => {
 									)}
 									{/* Cart */}
 									<div className="ml-4 flow-root lg:ml-8">
-										<div className="group -m-2 flex items-center p-2">
-											<ShoppingBagIcon
+										<button
+											type="button"
+											className="group -m-2 flex items-center p-2"
+											onClick={() => router.push('/myShoppings')}
+										>
+											<ShoppingCartIcon
 												className="h-6 w-6 flex-shrink-0 text-white group-hover:text-green-300"
 												aria-hidden="true"
 											/>
 											<span className="ml-2 text-sm font-medium text-white group-hover:text-green-300">
-												0
+												{dataShoppingCard?.length || 0}
 											</span>
 											<span className="sr-only">items in cart, view bag</span>
-										</div>
+										</button>
 									</div>
 								</div>
 							</div>
@@ -275,12 +295,12 @@ export const Navbar = () => {
 											{/* Cart */}
 											<div className="ml-4 flow-root lg:ml-8">
 												<div className="group -m-2 flex items-center p-2">
-													<ShoppingBagIcon
+													<ShoppingCartIcon
 														className="h-6 w-6 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
 														aria-hidden="true"
 													/>
 													<span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">
-														0
+														{dataShoppingCard?.length || 0}
 													</span>
 													<span className="sr-only">
 														items in cart, view bag
