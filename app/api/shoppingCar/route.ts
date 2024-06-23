@@ -123,3 +123,71 @@ export async function POST(request: Request) {
 		{ status: 400 }
 	)
 }
+
+export async function PUT(request: Request) {
+	const { quantity, productId, price } = await request.json()
+	const errors: Array<Error> = []
+
+	const sesion = await getServerSession(options)
+	if (sesion) {
+		const {
+			user: { email }
+		} = sesion as { user: { email?: string } }
+
+		const db = await connectToDatabase()
+
+		const result = await db.collection('users').findOne({ email })
+
+		if (!result) {
+			return NextResponse.json(
+				{
+					error: 'Usuario no encontrado'
+				},
+				{ status: 400 }
+			)
+		}
+
+		if (!productId) {
+			errors.push({ field: 'productId', message: 'ProductId Requerida' })
+		}
+
+		if (!quantity) {
+			errors.push({ field: 'quantity', message: 'Cantidad Requerida' })
+		}
+
+		if (!price) {
+			errors.push({ field: 'price', message: 'Precio Requerido' })
+		}
+
+		const currentDate = Date.now()
+		const newProduct = {
+			quantity,
+			total: quantity * price,
+			updatedAt: currentDate
+		}
+
+		try {
+			const response = await db
+				.collection('shoppingCar')
+				.updateOne({ productId: new ObjectId(productId) }, { $set: newProduct })
+			return NextResponse.json({
+				message: 'Productro actualizado con éxito',
+				shoppingCard: response
+			})
+		} catch (error) {
+			return NextResponse.json(
+				{
+					message: 'Error al actualizar el producto del carrito',
+					errors
+				},
+				{ status: 400 }
+			)
+		}
+	}
+	return NextResponse.json(
+		{
+			error: 'Usuario no autenticado'
+		},
+		{ status: 400 }
+	)
+}

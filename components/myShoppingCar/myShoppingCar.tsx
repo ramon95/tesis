@@ -2,22 +2,70 @@
 
 import {
 	GET_USER_SHOOPING_CAR_DETAIL,
+	editItemShoppingCar,
 	getProductsShoppingCarDetail
 } from '@/api'
-import { QuestionMarkCircleIcon } from '@heroicons/react/20/solid'
+import { Input } from '@/components'
+import { CheckIcon } from '@heroicons/react/20/solid'
 import { useQuery } from '@tanstack/react-query'
 import Image from 'next/image'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
 
 export const MyShoppingCar = () => {
-	const { data } = useQuery({
+	const [subTotal, setSubTotal] = useState(0)
+	const tax = subTotal * 0.1
+	const shipping = subTotal * 0.15
+	const { data, refetch } = useQuery({
 		queryKey: [GET_USER_SHOOPING_CAR_DETAIL],
 		queryFn: () => getProductsShoppingCarDetail(),
 		retry: false
 	})
 
+	const { register, setValue, handleSubmit, getValues } = useForm<any>({
+		mode: 'onChange'
+	})
+
+	const handleUpdateQuantity = async (name: string) => {
+		if (data) {
+			const quantitys = getValues()
+			const newQuantity = quantitys[name]
+			const itemShoppingCar = data.find(item => item._id === name.split('-')[1])
+			if (itemShoppingCar) {
+				const body = {
+					quantity: Number(newQuantity),
+					productId: itemShoppingCar.product._id,
+					price: Number(itemShoppingCar.product.price)
+				}
+				const res = await editItemShoppingCar(body)
+				if (res.errors) {
+					toast.error(res.errors[0].message, {
+						position: 'top-center'
+					})
+				} else {
+					toast.success(res.message, {
+						position: 'top-center'
+					})
+					refetch()
+				}
+			}
+		}
+	}
+
+	const onSubmit = handleSubmit(async dataForm => {
+		console.warn('🚀 ~ onSubmit ~ dataForm:', dataForm)
+	})
+
 	useEffect(() => {
-		console.warn('🚀 ~ MyShoppingCar ~ data:', data)
+		if (data) {
+			let newSubtotal = 0
+			data.forEach(product => {
+				setValue(`quantity-${product._id}`, product.quantity)
+				newSubtotal += Number(product.total)
+			})
+			setSubTotal(newSubtotal)
+		}
 	}, [data])
 
 	return (
@@ -26,7 +74,10 @@ export const MyShoppingCar = () => {
 				<h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
 					Carrito de compra
 				</h1>
-				<form className="mt-12 lg:grid lg:grid-cols-12 lg:items-start lg:gap-x-12 xl:gap-x-16">
+				<form
+					className="mt-12 lg:grid lg:grid-cols-12 lg:items-start lg:gap-x-12 xl:gap-x-16"
+					onSubmit={onSubmit}
+				>
 					<section aria-labelledby="cart-heading" className="lg:col-span-7">
 						<ul
 							role="list"
@@ -34,18 +85,19 @@ export const MyShoppingCar = () => {
 						>
 							{data &&
 								data.map(product => (
-									<li key={product._id} className="flex">
+									<li key={product._id} className="flex py-3">
 										<div className="flex-shrink-0">
 											<Image
 												alt="image product"
 												src={product.product.image}
-												width={300}
-												height={300}
+												width={190}
+												height={190}
+												className="h-24 w-24 rounded-md object-cover object-center sm:h-48 sm:w-48"
 											/>
 										</div>
 
 										<div className="ml-4 flex flex-1 flex-col justify-between sm:ml-6">
-											<div className="">
+											<div>
 												<div>
 													<h3 className="text-sm font-medium text-gray-700">
 														{product.product.name}
@@ -54,14 +106,39 @@ export const MyShoppingCar = () => {
 
 												<div className="flex">
 													{product.size ? (
-														<p className="mr-4 border-r border-gray-200 pl-4 text-gray-500">
+														<p className="font-medium text-gray-900 text-sm border-r border-gray-200 pr-2 mr-2">
 															{product.size}
 														</p>
 													) : null}
-													<p className="mt-1 text-sm font-medium text-gray-900">
+													<p className="font-medium text-gray-900 text-sm">
 														${product.product.price}
 													</p>
 												</div>
+											</div>
+											<div className="flex items-end gap-2">
+												<Input
+													type="number"
+													name={`quantity-${product._id}`}
+													placeholder="100"
+													register={register}
+													rules={{
+														required: {
+															value: true,
+															message: 'Campo requerido'
+														}
+													}}
+													label="Cantidad del producto"
+												/>
+												<button
+													type="button"
+													aria-label="update item"
+													className="bg-green-700 rounded h-[50px] px-2 mb-[3px]"
+													onClick={() =>
+														handleUpdateQuantity(`quantity-${product._id}`)
+													}
+												>
+													<CheckIcon className="h-5 w-5" aria-hidden="true" />
+												</button>
 											</div>
 										</div>
 									</li>
@@ -78,55 +155,37 @@ export const MyShoppingCar = () => {
 							id="summary-heading"
 							className="text-lg font-medium text-gray-900"
 						>
-							Order summary
+							Resumen del pedido
 						</h2>
 
 						<dl className="mt-6 space-y-4">
 							<div className="flex items-center justify-between">
 								<dt className="text-sm text-gray-600">Subtotal</dt>
-								<dd className="text-sm font-medium text-gray-900">$99.00</dd>
+								<dd className="text-sm font-medium text-gray-900">
+									${subTotal}
+								</dd>
 							</div>
 							<div className="flex items-center justify-between border-t border-gray-200 pt-4">
 								<dt className="flex items-center text-sm text-gray-600">
-									<span>Shipping estimate</span>
-									<a
-										href="#"
-										className="ml-2 flex-shrink-0 text-gray-400 hover:text-gray-500"
-									>
-										<span className="sr-only">
-											Learn more about how shipping is calculated
-										</span>
-										<QuestionMarkCircleIcon
-											className="h-5 w-5"
-											aria-hidden="true"
-										/>
-									</a>
+									<span>Impuesto Estimado</span>
 								</dt>
-								<dd className="text-sm font-medium text-gray-900">$5.00</dd>
+								<dd className="text-sm font-medium text-gray-900">
+									${shipping}
+								</dd>
 							</div>
 							<div className="flex items-center justify-between border-t border-gray-200 pt-4">
 								<dt className="flex text-sm text-gray-600">
 									<span>Tax estimate</span>
-									<a
-										href="#"
-										className="ml-2 flex-shrink-0 text-gray-400 hover:text-gray-500"
-									>
-										<span className="sr-only">
-											Learn more about how tax is calculated
-										</span>
-										<QuestionMarkCircleIcon
-											className="h-5 w-5"
-											aria-hidden="true"
-										/>
-									</a>
 								</dt>
-								<dd className="text-sm font-medium text-gray-900">$8.32</dd>
+								<dd className="text-sm font-medium text-gray-900">${tax}</dd>
 							</div>
 							<div className="flex items-center justify-between border-t border-gray-200 pt-4">
 								<dt className="text-base font-medium text-gray-900">
-									Order total
+									Total del pedido
 								</dt>
-								<dd className="text-base font-medium text-gray-900">$112.32</dd>
+								<dd className="text-base font-medium text-gray-900">
+									${tax + shipping + subTotal}
+								</dd>
 							</div>
 						</dl>
 
@@ -135,7 +194,7 @@ export const MyShoppingCar = () => {
 								type="submit"
 								className="w-full rounded-md border border-transparent bg-indigo-600 px-4 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
 							>
-								Checkout
+								Comprar
 							</button>
 						</div>
 					</section>

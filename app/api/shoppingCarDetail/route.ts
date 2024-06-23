@@ -59,7 +59,6 @@ export async function GET() {
 				}
 			])
 			.toArray()
-		console.warn('🚀 ~ GET ~ products:', products)
 
 		return NextResponse.json({ products })
 	}
