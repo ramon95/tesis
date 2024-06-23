@@ -1,12 +1,12 @@
 'use client'
 
-import { GET_PRODUCT, getProducts } from '@/api'
+import { GET_PERFUMERY, getProducts } from '@/api'
 import { ItemCard, SkeletonItemCard } from '@/components'
 import { useQuery } from '@tanstack/react-query'
 
 export const Perfumery = () => {
 	const { data, isLoading } = useQuery({
-		queryKey: [GET_PRODUCT],
+		queryKey: [GET_PERFUMERY],
 		queryFn: () => getProducts('perfumery'),
 		retry: false
 	})

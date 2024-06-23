@@ -1,12 +1,12 @@
 'use client'
 
-import { GET_PRODUCT, getProducts } from '@/api'
+import { GET_APPLIANCESSPAREPARTS, getProducts } from '@/api'
 import { ItemCard, SkeletonItemCard } from '@/components'
 import { useQuery } from '@tanstack/react-query'
 
 export const AppliancesSpareParts = () => {
 	const { data, isLoading } = useQuery({
-		queryKey: [GET_PRODUCT],
+		queryKey: [GET_APPLIANCESSPAREPARTS],
 		queryFn: () => getProducts('appliancesSpareParts'),
 		retry: false
 	})
