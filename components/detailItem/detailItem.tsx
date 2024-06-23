@@ -1,10 +1,15 @@
-import { ProductsResponse } from '@/api'
-import { RadioButtom } from '@/components'
+import {
+	ProductsResponse,
+	createShoppingCard,
+	createShoppingCardBody
+} from '@/api'
+import { Input, RadioButtom } from '@/components'
 import clsx from 'clsx'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { Dispatch, SetStateAction, useEffect } from 'react'
+import { Dispatch, SetStateAction } from 'react'
 import { useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
 
 interface DetailItemProps {
 	selectedSize?: string
@@ -23,19 +28,35 @@ export const DetailItem: React.FC<DetailItemProps> = ({ data }) => {
 	]
 	const {
 		control,
+		register,
+		setValue,
 		handleSubmit,
 		formState: { errors }
-	} = useForm<{ size: string }>({
+	} = useForm<{ size: string; quantity: string }>({
 		mode: 'onChange'
 	})
 
 	const onSubmit = handleSubmit(async dataForm => {
-		console.warn('🚀 ~ onSubmit ~ dataForm:', dataForm)
+		const body = {
+			size: dataForm.size,
+			quantity: Number(dataForm.quantity),
+			productId: data?._id as string,
+			typeProduct: pathname.split('/')[1] as string,
+			total: Number(dataForm.quantity) * Number(data?.price as string)
+		} as createShoppingCardBody
+		const res = await createShoppingCard(body)
+		if (res.errors) {
+			toast.error(res.errors[0].message, {
+				position: 'top-center'
+			})
+		} else {
+			toast.success(res.message, {
+				position: 'top-center'
+			})
+			setValue('size', '')
+			setValue('quantity', '')
+		}
 	})
-
-	useEffect(() => {
-		console.warn('🚀 ~ data:', data)
-	}, [data])
 
 	return (
 		<div>
@@ -74,7 +95,7 @@ export const DetailItem: React.FC<DetailItemProps> = ({ data }) => {
 					<div className="mt-10 lg:col-start-1 lg:row-start-2 lg:max-w-lg lg:self-start">
 						<form onSubmit={onSubmit}>
 							{pathname.includes('clothes') && (
-								<div className="sm:flex sm:justify-between">
+								<div className="sm:flex sm:justify-between mb-2">
 									<RadioButtom
 										name="size"
 										label="Tallas"
@@ -82,11 +103,28 @@ export const DetailItem: React.FC<DetailItemProps> = ({ data }) => {
 										control={control}
 										error={errors.size}
 										rules={{
-											required: 'Selecciona una talla'
+											required: {
+												value: pathname.includes('clothes'),
+												message: 'Campo requerido'
+											}
 										}}
 									/>
 								</div>
 							)}
+							<Input
+								type="number"
+								name="quantity"
+								placeholder="100"
+								register={register}
+								error={errors.quantity}
+								rules={{
+									required: {
+										value: true,
+										message: 'Campo requerido'
+									}
+								}}
+								label="Cantidad del producto"
+							/>
 							<div className="mt-10">
 								<button
 									type="submit"

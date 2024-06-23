@@ -3,7 +3,6 @@
 import { ProductsResponse } from '@/api'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useEffect } from 'react'
 
 interface ItemCardProps {
 	product: ProductsResponse
@@ -14,10 +13,6 @@ export const ItemCard: React.FC<ItemCardProps> = ({
 	product,
 	urlDetailProduct
 }) => {
-	useEffect(() => {
-		console.warn('🚀 ~ product:', product)
-	}, [product])
-
 	return (
 		<div className="group relative">
 			<div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
