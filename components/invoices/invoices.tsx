@@ -1,58 +1,115 @@
 'use client'
 
+import { GET_INVOICES_USERS, getInvoices } from '@/api'
+import { useQuery } from '@tanstack/react-query'
+import moment from 'moment'
+import Image from 'next/image'
+import { useEffect } from 'react'
+
 export const Invoices = () => {
-	const shoppings = [
-		{ id: 0, date: '01/01/2024', status: 'Enviado' },
-		{ id: 1, date: '01/02/2024', status: 'Enviado' },
-		{ id: 2, date: '01/03/2024', status: 'Enviado' },
-		{ id: 3, date: '01/04/2024', status: 'Enviado' },
-		{ id: 4, date: '01/05/2024', status: 'Enviado' },
-		{ id: 4, date: '01/06/2024', status: 'Pendiente' }
-	]
+	const { data } = useQuery({
+		queryKey: [GET_INVOICES_USERS],
+		queryFn: () => getInvoices(),
+		retry: false
+	})
+
+	useEffect(() => {
+		console.warn('🚀 ~ Invoices ~ data:', data)
+	}, [data])
+
 	return (
-		<div className="px-4 sm:px-6 lg:px-8">
-			<div className="sm:flex sm:items-center">
-				<div className="sm:flex-auto">
-					<h1 className="text-base font-semibold leading-6 text-gray-900">
-						Tus compras
-					</h1>
-				</div>
-			</div>
-			<div className="mt-8 flow-root">
-				<div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-					<div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-						<table className="min-w-full divide-y divide-gray-300">
-							<thead>
-								<tr>
-									<th
-										scope="col"
-										className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0"
-									>
-										Fecha
-									</th>
-									<th
-										scope="col"
-										className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-									>
-										Estado
-									</th>
-								</tr>
-							</thead>
-							<tbody className="divide-y divide-gray-200">
-								{shoppings.map(shopping => (
-									<tr key={shopping.id}>
-										<td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
-											{shopping.date}
-										</td>
-										<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-											{shopping.status}
-										</td>
-									</tr>
-								))}
-							</tbody>
-						</table>
+		<div className="bg-white">
+			<div className="py-4 sm:py-16">
+				<div className="mx-auto max-w-7xl sm:px-2 lg:px-8">
+					<div className="mx-auto max-w-2xl px-4 lg:max-w-4xl lg:px-0">
+						<h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+							Historial de pedidos
+						</h1>
 					</div>
 				</div>
+				{data &&
+					data.map(invoice => (
+						<div className="mt-16" key={invoice._id}>
+							<h2 className="sr-only">Ordenes recientes</h2>
+							<div className="mx-auto max-w-7xl sm:px-2 lg:px-8">
+								<div className="mx-auto max-w-2xl space-y-8 sm:px-4 lg:max-w-4xl lg:px-0">
+									<div className="border-b border-t border-gray-200 bg-white shadow-sm sm:rounded-lg sm:border">
+										<div className="border-b border-gray-200 p-4 sm:flex items-end justify-between">
+											<div className="sm:flex items-center gap-3">
+												<div>
+													<dt className="font-medium text-gray-900">
+														Numero de orden
+													</dt>
+													<dd className="mt-1 text-gray-500 truncate">
+														{invoice._id}
+													</dd>
+												</div>
+												<div>
+													<dt className="font-medium text-gray-900">
+														Fecha de creacion
+													</dt>
+													<dd className="mt-1 text-gray-500">
+														<time dateTime={invoice.createdAt}>
+															{moment(invoice.createdAt).format('MMM D, YYYY')}
+														</time>
+													</dd>
+												</div>
+											</div>
+
+											<div>
+												<dt className="font-medium text-gray-900 sm:text-right">
+													Total
+												</dt>
+												<dd className="mt-1 font-medium text-gray-900 sm:text-right">
+													${invoice.total}
+												</dd>
+											</div>
+										</div>
+
+										{/* Products */}
+										<h4 className="sr-only">Items</h4>
+										<ul role="list" className="divide-y divide-gray-200">
+											{invoice.products.map(product => (
+												<li key={product._id} className="p-4 sm:p-6">
+													<div className="flex items-center sm:items-start">
+														<div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-gray-200 sm:h-40 sm:w-40">
+															<Image
+																alt="preview product"
+																src={product.image}
+																width={160}
+																height={160}
+																className="h-full w-full object-cover object-center"
+															/>
+														</div>
+														<div className="ml-6 flex-1 text-sm">
+															<div className="font-medium text-gray-900 sm:flex sm:justify-between">
+																<h5>
+																	{product.name}
+																	{product.size !== null &&
+																		` | ${product.size}`}
+																</h5>
+																<p className="mt-2 sm:mt-0">${product.price}</p>
+															</div>
+															<div className="font-medium text-gray-900 sm:flex sm:justify-between">
+																<h5>Cantidad: {product.quatity}</h5>
+																<p className="mt-2 sm:mt-0">
+																	${Number(product.price) * product.quatity}
+																</p>
+															</div>
+
+															<p className="hidden text-gray-500 sm:mt-2 sm:block">
+																{product.description}
+															</p>
+														</div>
+													</div>
+												</li>
+											))}
+										</ul>
+									</div>
+								</div>
+							</div>
+						</div>
+					))}
 			</div>
 		</div>
 	)
