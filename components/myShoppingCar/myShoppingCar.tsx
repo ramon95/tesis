@@ -2,6 +2,7 @@
 
 import {
 	GET_USER_SHOOPING_CAR_DETAIL,
+	createInvoice,
 	editItemShoppingCar,
 	getProductsShoppingCarDetail
 } from '@/api'
@@ -53,8 +54,37 @@ export const MyShoppingCar = () => {
 		}
 	}
 
-	const onSubmit = handleSubmit(async dataForm => {
-		console.warn('🚀 ~ onSubmit ~ dataForm:', dataForm)
+	const onSubmit = handleSubmit(async () => {
+		if (data) {
+			const products: { id: string; quatity: number; size: string | null }[] =
+				[]
+
+			data.forEach(item => {
+				products.push({
+					id: item.product._id,
+					quatity: Number(item.quantity),
+					size: item.size
+				})
+			})
+
+			const body = {
+				total: subTotal + tax + shipping,
+				subTotal,
+				tax,
+				shipping,
+				products
+			}
+			const res = await createInvoice(body)
+			if (res.errors) {
+				toast.error(res.errors[0].message, {
+					position: 'top-center'
+				})
+			} else {
+				toast.success(res.message, {
+					position: 'top-center'
+				})
+			}
+		}
 	})
 
 	useEffect(() => {
@@ -83,7 +113,7 @@ export const MyShoppingCar = () => {
 							role="list"
 							className="divide-y divide-gray-200 border-b border-t border-gray-200"
 						>
-							{data &&
+							{data ? (
 								data.map(product => (
 									<li key={product._id} className="flex py-3">
 										<div className="flex-shrink-0">
@@ -142,7 +172,10 @@ export const MyShoppingCar = () => {
 											</div>
 										</div>
 									</li>
-								))}
+								))
+							) : (
+								<h1>No hay productos</h1>
+							)}
 						</ul>
 					</section>
 
