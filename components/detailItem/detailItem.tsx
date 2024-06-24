@@ -8,6 +8,7 @@ import {
 import { Input, RadioButtom } from '@/components'
 import { useQuery } from '@tanstack/react-query'
 import clsx from 'clsx'
+import { useSession } from 'next-auth/react'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { Dispatch, SetStateAction } from 'react'
@@ -22,6 +23,7 @@ interface DetailItemProps {
 
 export const DetailItem: React.FC<DetailItemProps> = ({ data }) => {
 	const pathname = usePathname()
+	const { status } = useSession()
 	const sizes = [
 		{ name: 'S' },
 		{ name: 'M' },
@@ -83,15 +85,13 @@ export const DetailItem: React.FC<DetailItemProps> = ({ data }) => {
 		<div>
 			<div className="sm:flex justify-center sm:mt-5 gap-5">
 				<div className="lg:col-start-2 lg:row-span-2 lg:mt-0 lg:self-center">
-					<div className="aspect-h-1 aspect-w-1 overflow-hidden rounded-lg">
-						<Image
-							alt="prodcut"
-							src={data?.image || ''}
-							width={300}
-							height={300}
-							className="h-full w-full object-cover object-center"
-						/>
-					</div>
+					<Image
+						alt="prodcut"
+						src={data?.image || ''}
+						width={300}
+						height={400}
+						className="h-full w-full object-cover object-center rounded"
+					/>
 				</div>
 				<div className="">
 					<div className="mt-4 flex item-center gap-2">
@@ -146,16 +146,18 @@ export const DetailItem: React.FC<DetailItemProps> = ({ data }) => {
 								}}
 								label="Cantidad del producto"
 							/>
-							<div className="mt-10">
-								<button
-									type="submit"
-									className={clsx(
-										'flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50'
-									)}
-								>
-									Añadir al carrito
-								</button>
-							</div>
+							{status === 'authenticated' && (
+								<div className="mt-10">
+									<button
+										type="submit"
+										className={clsx(
+											'flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50'
+										)}
+									>
+										Añadir al carrito
+									</button>
+								</div>
+							)}
 						</form>
 					</div>
 				</div>

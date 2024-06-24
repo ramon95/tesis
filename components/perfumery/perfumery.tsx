@@ -15,8 +15,7 @@ export const Perfumery = () => {
 		<div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
 			{isLoading ? (
 				<SkeletonItemCard />
-			) : (
-				data &&
+			) : data !== undefined ? (
 				data.map(product => (
 					<ItemCard
 						key={product._id}
@@ -24,6 +23,8 @@ export const Perfumery = () => {
 						urlDetailProduct="/perfumery"
 					/>
 				))
+			) : (
+				<h1 className="text-black">No hay productos</h1>
 			)}
 		</div>
 	)
