@@ -6,7 +6,8 @@ const nextConfig = {
 			'cdn.shopify.com',
 			'loremflickr.com',
 			'tailwindui.com',
-			'images.unsplash.com'
+			'images.unsplash.com',
+			'i.pinimg.com'
 		]
 	}
 }

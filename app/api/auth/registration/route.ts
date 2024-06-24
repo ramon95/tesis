@@ -47,7 +47,8 @@ export async function POST(request: Request) {
 		email: email.toLowerCase(),
 		password: generateHash(password),
 		rol: 'user',
-		createdAt: currentDate
+		createdAt: currentDate,
+		updatedAt: currentDate
 	}
 
 	try {

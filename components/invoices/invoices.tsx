@@ -1,6 +1,6 @@
 'use client'
 
-export const MyShopping = () => {
+export const Invoices = () => {
 	const shoppings = [
 		{ id: 0, date: '01/01/2024', status: 'Enviado' },
 		{ id: 1, date: '01/02/2024', status: 'Enviado' },

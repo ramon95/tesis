@@ -1,13 +1,13 @@
 'use client'
 
-import { GET_APPLIANCES_SPARE_PARTS, getClothesAccesories } from '@/api'
+import { GET_APPLIANCESSPAREPARTS, getProducts } from '@/api'
 import { ItemCard, SkeletonItemCard } from '@/components'
 import { useQuery } from '@tanstack/react-query'
 
 export const AppliancesSpareParts = () => {
 	const { data, isLoading } = useQuery({
-		queryKey: [GET_APPLIANCES_SPARE_PARTS],
-		queryFn: () => getClothesAccesories(),
+		queryKey: [GET_APPLIANCESSPAREPARTS],
+		queryFn: () => getProducts('appliancesSpareParts'),
 		retry: false
 	})
 
@@ -17,7 +17,13 @@ export const AppliancesSpareParts = () => {
 				<SkeletonItemCard />
 			) : (
 				data &&
-				data.map(product => <ItemCard key={product.id} product={product} />)
+				data.map(product => (
+					<ItemCard
+						key={product._id}
+						product={product}
+						urlDetailProduct="/appliancesSpareParts"
+					/>
+				))
 			)}
 		</div>
 	)

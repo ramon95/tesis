@@ -1,32 +1,56 @@
 'use client'
 
+import {
+	GET_USER_PROFILE,
+	GET_USER_SHOOPING_CAR,
+	getProductsShoppingCar,
+	getUserProfile
+} from '@/api'
 import { Dialog, Menu, Popover, Transition } from '@headlessui/react'
 import {
 	ArrowLeftStartOnRectangleIcon,
 	Bars3Icon,
 	ChevronDownIcon,
 	Cog6ToothIcon,
+	FolderPlusIcon,
 	ShoppingBagIcon,
 	ShoppingCartIcon,
 	XMarkIcon
 } from '@heroicons/react/24/outline'
+import { useQuery } from '@tanstack/react-query'
+import clsx from 'clsx'
 import { signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
+import { usePathname, useRouter } from 'next/navigation'
 import { Fragment, useState } from 'react'
 import { LinkMenu } from '..'
 
 export const Navbar = () => {
-	const [open, setOpen] = useState(false)
+	const router = useRouter()
+	const pathname = usePathname()
 	const { data, status } = useSession()
+	const [open, setOpen] = useState(false)
+	const { data: dataUser } = useQuery({
+		queryKey: [GET_USER_PROFILE],
+		queryFn: () => getUserProfile(),
+		retry: false
+	})
+
+	const { data: dataShoppingCard } = useQuery({
+		queryKey: [GET_USER_SHOOPING_CAR],
+		queryFn: () => getProductsShoppingCar(),
+		retry: false
+	})
 	const navigation = [
-		{ id: 0, name: 'Ropa y accesorios', href: '/clothesAccesories' },
+		{ id: 0, name: 'Inicio', href: '/' },
+		{ id: 1, name: 'Ropa y accesorios', href: '/clothesAccesories' },
 		{
-			id: 1,
+			id: 2,
 			name: 'Elctrodomesticos y repuestos',
 			href: '/appliancesSpareParts'
 		},
-		{ id: 2, name: 'Perfumeria', href: '/perfumery' },
-		{ id: 3, name: 'Alimentos no perecederos', href: '/nonperishableFood' }
+		{ id: 3, name: 'Perfumeria', href: '/perfumery' },
+		{ id: 4, name: 'Alimentos no perecederos', href: '/nonperishableFood' }
 	]
 	const userNavigation = [
 		{
@@ -38,10 +62,11 @@ export const Navbar = () => {
 		{
 			id: 1,
 			name: 'Mi compras',
-			href: '/myShoppings',
-			icon: <ShoppingCartIcon className="h-6 w-6" />
+			href: '/invoices',
+			icon: <ShoppingBagIcon className="h-6 w-6" />
 		}
 	]
+
 	return (
 		<div>
 			{/* Mobile menu */}
@@ -116,6 +141,13 @@ export const Navbar = () => {
 												</div>
 											))}
 											<div className="flow-root">
+												<LinkMenu
+													mobile
+													href="/newProduct"
+													name="Agregar productos"
+												/>
+											</div>
+											<div className="flow-root">
 												<button
 													type="button"
 													className="-m-2 block p-2 font-medium text-gray-900"
@@ -137,69 +169,118 @@ export const Navbar = () => {
 					{/* Top navigation */}
 					<div className="bg-gray-900 hidden lg:block">
 						<div className="mx-auto flex h-10 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-							<div className="flex justify-end w-full space-x-6">
-								{status === 'unauthenticated' ? (
-									<>
-										<LinkMenu name="Entrar" href="/auth/singin" />
-										<LinkMenu name="Crear cuenta" href="/auth/registration" />
-									</>
-								) : (
-									<Menu>
-										<Menu.Button className="relative flex item-center gap-2">
-											Bienvenido {data?.user?.name}{' '}
-											<ChevronDownIcon className="h-6 w-6" aria-hidden="true" />
-										</Menu.Button>
-										<Menu.Items className="absolute z-10 bg-gray-700 -bottom-[55px] p-4 rounded">
-											{userNavigation.map(item => (
-												<Menu.Item key={item.id}>
-													<Link
-														className="flex items-center gap-2 data-[focus]:bg-blue-100 mb-2"
-														href={item.href}
+							<div className="flex justify-between w-full space-x-6">
+								<Popover.Group className="inset-x-0 bottom-0 px-4">
+									<div className="flex h-full justify-center space-x-8">
+										{navigation.map(page => (
+											<Link
+												key={page.name}
+												href={page.href}
+												className={clsx(
+													pathname === page.href ||
+														(page.href !== '/' &&
+															pathname.startsWith(page.href))
+														? 'text-green-300'
+														: 'text-white hover:text-green-300',
+													'flex items-center text-sm font-medium '
+												)}
+											>
+												{page.name}
+											</Link>
+										))}
+									</div>
+								</Popover.Group>
+								<div className="flex item-center justify-center gap-2">
+									{status === 'authenticated' ? (
+										<Menu>
+											<Menu.Button className="relative flex item-center gap-2">
+												Bienvenido {data?.user?.name}{' '}
+												<ChevronDownIcon
+													className="h-6 w-6"
+													aria-hidden="true"
+												/>
+											</Menu.Button>
+											<Menu.Items
+												className={clsx(
+													dataUser?.rol === 'admin'
+														? '-bottom-[153px]'
+														: '-bottom-[120px]',
+													'absolute z-10 bg-gray-700 p-4 rounded'
+												)}
+											>
+												{userNavigation.map(item => (
+													<Menu.Item key={item.id}>
+														<Link
+															className="flex items-center gap-2 data-[focus]:bg-blue-100 mb-2"
+															href={item.href}
+														>
+															{item.icon}
+															{item.name}
+														</Link>
+													</Menu.Item>
+												))}
+												{dataUser?.rol === 'admin' && (
+													<Menu.Item>
+														<Link
+															className="flex items-center gap-2 data-[focus]:bg-blue-100 mb-2"
+															href="/newProduct"
+														>
+															<FolderPlusIcon className="h-6 w-6" />
+															Agregar productos
+														</Link>
+													</Menu.Item>
+												)}
+												<Menu.Item>
+													<button
+														type="button"
+														className="flex items-center gap-2 data-[focus]:bg-blue-100"
+														onClick={() => signOut()}
 													>
-														{item.icon}
-														{item.name}
-													</Link>
+														<ArrowLeftStartOnRectangleIcon className="h-6 w-6" />
+														Salir
+													</button>
 												</Menu.Item>
-											))}
-											<Menu.Item>
-												<button
-													type="button"
-													className="flex items-center gap-2 data-[focus]:bg-blue-100"
-													onClick={() => signOut()}
-												>
-													<ArrowLeftStartOnRectangleIcon className="h-6 w-6" />
-													Salir
-												</button>
-											</Menu.Item>
-										</Menu.Items>
-									</Menu>
-								)}
+											</Menu.Items>
+										</Menu>
+									) : (
+										<>
+											<LinkMenu name="Entrar" href="/auth/singin" />
+											<LinkMenu name="Crear cuenta" href="/auth/registration" />
+										</>
+									)}
+									{/* Cart */}
+									<div className="ml-4 flow-root lg:ml-8">
+										<button
+											type="button"
+											className="group -m-2 flex items-center p-2"
+											onClick={() => router.push('/myShoppingCar')}
+										>
+											<ShoppingCartIcon
+												className={clsx(
+													pathname === '/myShoppingCar'
+														? 'text-green-300'
+														: 'text-white group-hover:text-green-300',
+													'h-6 w-6 flex-shrink-0'
+												)}
+												aria-hidden="true"
+											/>
+											<span className="ml-2 text-sm font-medium text-white group-hover:text-green-300">
+												{dataShoppingCard?.length || 0}
+											</span>
+											<span className="sr-only">items in cart, view bag</span>
+										</button>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
 
 					{/* Secondary navigation */}
-					<div className="bg-white">
+					<div className="bg-white lg:hidden">
 						<div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 							<div className="border-b border-gray-200">
 								<div className="flex h-16 items-center justify-between">
-									<div className="hidden h-full lg:flex">
-										{/* Flyout menus */}
-										<Popover.Group className="inset-x-0 bottom-0 px-4">
-											<div className="flex h-full justify-center space-x-8">
-												{navigation.map(page => (
-													<Link
-														key={page.name}
-														href={page.href}
-														className="flex items-center text-sm font-medium text-gray-700 hover:text-gray-800"
-													>
-														{page.name}
-													</Link>
-												))}
-											</div>
-										</Popover.Group>
-									</div>
-									<div className="lg:hidden">
+									<div>
 										<button
 											type="button"
 											className="-ml-2 rounded-md bg-white p-2 text-gray-400"
@@ -214,18 +295,27 @@ export const Navbar = () => {
 										<div className="flex items-center lg:ml-8">
 											{/* Cart */}
 											<div className="ml-4 flow-root lg:ml-8">
-												<div className="group -m-2 flex items-center p-2">
-													<ShoppingBagIcon
-														className="h-6 w-6 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
+												<button
+													type="button"
+													className="group -m-2 flex items-center p-2"
+													onClick={() => router.push('/myShoppingCar')}
+												>
+													<ShoppingCartIcon
+														className={clsx(
+															pathname === '/myShoppingCar'
+																? 'text-gray-800'
+																: 'text-gray-700 group-hover:text-gray-800',
+															'h-6 w-6 flex-shrink-0 '
+														)}
 														aria-hidden="true"
 													/>
 													<span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">
-														0
+														{dataShoppingCard?.length || 0}
 													</span>
 													<span className="sr-only">
 														items in cart, view bag
 													</span>
-												</div>
+												</button>
 											</div>
 										</div>
 									</div>

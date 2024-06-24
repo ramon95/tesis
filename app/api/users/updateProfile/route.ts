@@ -25,6 +25,12 @@ export async function GET() {
 			{ status: 400 }
 		)
 	}
+	return NextResponse.json(
+		{
+			error: 'Usuario no autenticado'
+		},
+		{ status: 400 }
+	)
 }
 
 export async function PUT(request: Request) {

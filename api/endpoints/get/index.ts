@@ -1,2 +1,3 @@
-export * from './clothesAccesories'
+export * from './products'
+export * from './shoppingCar'
 export * from './users'

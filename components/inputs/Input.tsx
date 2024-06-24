@@ -54,7 +54,7 @@ export const Input: React.FC<InputProps> = ({
 		if (type === 'text') {
 			regex = /^[a-zA-ZñÑ ]*$/
 		} else if (type === 'number') {
-			regex = /^[0-9]*$/
+			regex = /^[0-9.,]*$/
 		} else if (type === 'email') {
 			regex = /^[a-zA-Z0-9@.ñÑ ]*$/
 		} else if (url) {
@@ -75,7 +75,11 @@ export const Input: React.FC<InputProps> = ({
 
 	return (
 		<div
-			className={clsx('flex flex-col flex-1', 'relative', classNameContainer)}
+			className={clsx(
+				'flex flex-col flex-1 pb-1',
+				'relative',
+				classNameContainer
+			)}
 		>
 			{label && <h4 className="font-semibold text-black mb-1">{label}</h4>}
 
