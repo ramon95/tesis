@@ -248,28 +248,29 @@ export const Navbar = () => {
 											<LinkMenu name="Crear cuenta" href="/auth/registration" />
 										</>
 									)}
-									{/* Cart */}
-									<div className="ml-4 flow-root lg:ml-8">
-										<button
-											type="button"
-											className="group -m-2 flex items-center p-2"
-											onClick={() => router.push('/myShoppingCar')}
-										>
-											<ShoppingCartIcon
-												className={clsx(
-													pathname === '/myShoppingCar'
-														? 'text-green-300'
-														: 'text-white group-hover:text-green-300',
-													'h-6 w-6 flex-shrink-0'
-												)}
-												aria-hidden="true"
-											/>
-											<span className="ml-2 text-sm font-medium text-white group-hover:text-green-300">
-												{dataShoppingCard?.length || 0}
-											</span>
-											<span className="sr-only">items in cart, view bag</span>
-										</button>
-									</div>
+									{status === 'authenticated' && (
+										<div className="ml-4 flow-root lg:ml-8">
+											<button
+												type="button"
+												className="group -m-2 flex items-center p-2"
+												onClick={() => router.push('/myShoppingCar')}
+											>
+												<ShoppingCartIcon
+													className={clsx(
+														pathname === '/myShoppingCar'
+															? 'text-green-300'
+															: 'text-white group-hover:text-green-300',
+														'h-6 w-6 flex-shrink-0'
+													)}
+													aria-hidden="true"
+												/>
+												<span className="ml-2 text-sm font-medium text-white group-hover:text-green-300">
+													{dataShoppingCard?.length || 0}
+												</span>
+												<span className="sr-only">items in cart, view bag</span>
+											</button>
+										</div>
+									)}
 								</div>
 							</div>
 						</div>
@@ -290,35 +291,35 @@ export const Navbar = () => {
 											<Bars3Icon className="h-6 w-6" aria-hidden="true" />
 										</button>
 									</div>
-
-									<div className="flex flex-1 items-center justify-end">
-										<div className="flex items-center lg:ml-8">
-											{/* Cart */}
-											<div className="ml-4 flow-root lg:ml-8">
-												<button
-													type="button"
-													className="group -m-2 flex items-center p-2"
-													onClick={() => router.push('/myShoppingCar')}
-												>
-													<ShoppingCartIcon
-														className={clsx(
-															pathname === '/myShoppingCar'
-																? 'text-gray-800'
-																: 'text-gray-700 group-hover:text-gray-800',
-															'h-6 w-6 flex-shrink-0 '
-														)}
-														aria-hidden="true"
-													/>
-													<span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">
-														{dataShoppingCard?.length || 0}
-													</span>
-													<span className="sr-only">
-														items in cart, view bag
-													</span>
-												</button>
+									{status === 'authenticated' && (
+										<div className="flex flex-1 items-center justify-end">
+											<div className="flex items-center lg:ml-8">
+												<div className="ml-4 flow-root lg:ml-8">
+													<button
+														type="button"
+														className="group -m-2 flex items-center p-2"
+														onClick={() => router.push('/myShoppingCar')}
+													>
+														<ShoppingCartIcon
+															className={clsx(
+																pathname === '/myShoppingCar'
+																	? 'text-gray-800'
+																	: 'text-gray-700 group-hover:text-gray-800',
+																'h-6 w-6 flex-shrink-0 '
+															)}
+															aria-hidden="true"
+														/>
+														<span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">
+															{dataShoppingCard?.length || 0}
+														</span>
+														<span className="sr-only">
+															items in cart, view bag
+														</span>
+													</button>
+												</div>
 											</div>
 										</div>
-									</div>
+									)}
 								</div>
 							</div>
 						</div>

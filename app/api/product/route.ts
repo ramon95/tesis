@@ -7,49 +7,25 @@ import { options } from '../auth/[...nextauth]/options'
 export async function GET(request: Request) {
 	const { searchParams } = new URL(request.url)
 
-	const sesion = await getServerSession(options)
-	if (sesion) {
-		const {
-			user: { email }
-		} = sesion as { user: { email?: string } }
+	const dbg = await connectToDatabase()
 
-		const dbg = await connectToDatabase()
+	if (searchParams.get('id')) {
+		const _id = new ObjectId(searchParams.get('id') as string)
+		if (_id) {
+			const product = await dbg.collection('products').findOne({ _id })
 
-		const user = await dbg.collection('users').findOne({ email })
-
-		if (!user) {
-			return NextResponse.json(
-				{
-					error: 'Usuario no encontrado'
-				},
-				{ status: 400 }
-			)
-		}
-
-		if (searchParams.get('id')) {
-			const _id = new ObjectId(searchParams.get('id') as string)
-			if (_id) {
-				const product = await dbg.collection('products').findOne({ _id })
-
-				return NextResponse.json({ product })
-			}
-			return NextResponse.json(
-				{
-					error: 'Prodcuto no encontrado'
-				},
-				{ status: 400 }
-			)
+			return NextResponse.json({ product })
 		}
 		return NextResponse.json(
 			{
-				error: 'ID del producto requerido'
+				error: 'Prodcuto no encontrado'
 			},
 			{ status: 400 }
 		)
 	}
 	return NextResponse.json(
 		{
-			error: 'Usuario no autenticado'
+			error: 'ID del producto requerido'
 		},
 		{ status: 400 }
 	)
