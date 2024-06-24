@@ -87,6 +87,16 @@ export async function POST(request: Request) {
 			}
 		}
 
+		if (errors.length) {
+			return NextResponse.json(
+				{
+					message: 'Error al agregar el producto en el carrito',
+					errors
+				},
+				{ status: 400 }
+			)
+		}
+
 		const currentDate = Date.now()
 		const newProduct = {
 			_id: new ObjectId(),

@@ -1,13 +1,16 @@
 'use client'
 
 import {
+	GET_USER_SHOOPING_CAR,
 	GET_USER_SHOOPING_CAR_DETAIL,
 	createInvoice,
+	deleteShoppingCarById,
 	editItemShoppingCar,
+	getProductsShoppingCar,
 	getProductsShoppingCarDetail
 } from '@/api'
-import { Input } from '@/components'
-import { CheckIcon } from '@heroicons/react/20/solid'
+import { Input, SkeletonItemCard } from '@/components'
+import { CheckIcon, XMarkIcon } from '@heroicons/react/20/solid'
 import { useQuery } from '@tanstack/react-query'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
@@ -18,9 +21,15 @@ export const MyShoppingCar = () => {
 	const [subTotal, setSubTotal] = useState(0)
 	const tax = subTotal * 0.1
 	const shipping = subTotal * 0.15
-	const { data, refetch } = useQuery({
+	const { data, refetch, isLoading } = useQuery({
 		queryKey: [GET_USER_SHOOPING_CAR_DETAIL],
 		queryFn: () => getProductsShoppingCarDetail(),
+		retry: false
+	})
+
+	const { refetch: refetchShoppingCar } = useQuery({
+		queryKey: [GET_USER_SHOOPING_CAR],
+		queryFn: () => getProductsShoppingCar(),
 		retry: false
 	})
 
@@ -54,6 +63,21 @@ export const MyShoppingCar = () => {
 		}
 	}
 
+	const handleDeleteItem = async (id: string) => {
+		const res = await deleteShoppingCarById(id)
+		if (res.errors) {
+			toast.error(res.errors[0].message, {
+				position: 'top-center'
+			})
+		} else {
+			toast.success(res.message, {
+				position: 'top-center'
+			})
+			refetch()
+			refetchShoppingCar()
+		}
+	}
+
 	const onSubmit = handleSubmit(async () => {
 		if (data) {
 			const products: { id: string; quatity: number; size: string | null }[] =
@@ -83,6 +107,7 @@ export const MyShoppingCar = () => {
 				toast.success(res.message, {
 					position: 'top-center'
 				})
+				refetch()
 			}
 		}
 	})
@@ -98,7 +123,9 @@ export const MyShoppingCar = () => {
 		}
 	}, [data])
 
-	return (
+	return isLoading ? (
+		<SkeletonItemCard />
+	) : (
 		<div className="bg-white">
 			<div className="mx-auto max-w-2xl px-4 pb-24 pt-16 sm:px-6 lg:max-w-7xl lg:px-8">
 				<h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
@@ -113,7 +140,7 @@ export const MyShoppingCar = () => {
 							role="list"
 							className="divide-y divide-gray-200 border-b border-t border-gray-200"
 						>
-							{data ? (
+							{data && data.length > 0 ? (
 								data.map(product => (
 									<li key={product._id} className="flex py-3">
 										<div className="flex-shrink-0">
@@ -169,12 +196,20 @@ export const MyShoppingCar = () => {
 												>
 													<CheckIcon className="h-5 w-5" aria-hidden="true" />
 												</button>
+												<button
+													type="button"
+													aria-label="update item"
+													className="bg-red-600 rounded h-[50px] px-2 mb-[3px]"
+													onClick={() => handleDeleteItem(`${product._id}`)}
+												>
+													<XMarkIcon className="h-5 w-5" aria-hidden="true" />
+												</button>
 											</div>
 										</div>
 									</li>
 								))
 							) : (
-								<h1>No hay productos</h1>
+								<h1 className="text-black py-5">No hay productos</h1>
 							)}
 						</ul>
 					</section>

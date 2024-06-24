@@ -50,6 +50,16 @@ export async function POST(request: Request) {
 			errors.push({ field: 'shipping', message: 'Shipping Requerido' })
 		}
 
+		if (errors.length) {
+			return NextResponse.json(
+				{
+					message: 'Error al crear la factura',
+					errors
+				},
+				{ status: 400 }
+			)
+		}
+
 		const newProducts = products.map((item: { id: number }) => ({
 			...item,
 			id: new ObjectId(item.id)
@@ -70,6 +80,10 @@ export async function POST(request: Request) {
 
 		try {
 			const response = await db.collection('invoice').insertOne(newProduct)
+			await db
+				.collection('shoppingCar')
+				.deleteMany({ userId: new ObjectId(result._id) })
+
 			return NextResponse.json({
 				message: 'Factura creada con éxito',
 				invoiceId: response.insertedId
